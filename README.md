@@ -1,4 +1,4 @@
-NetworkingLibrary
+Networking Library
 =================
 
 This networking library that I developed provides a very simple API for utilization of TCP and UDP effectively and efficiently. It is built ontop of a networking wrapper I developed which handles all server and client communication over TCP and UDP.
@@ -20,4 +20,10 @@ public class ServerManager extends NEServerManager {
 }
 ```
 
-This will begin running a basic server on the TCP and UDP ports specified in the constructor. 
+This will begin running a basic server on the TCP and UDP ports specified in the constructor.  To actually start the server you need to create a static main method to start the application.
+
+```java
+public static void main(String[] args) {
+  new ServerManager(4395, 4395);
+}
+```
