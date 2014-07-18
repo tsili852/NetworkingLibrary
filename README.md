@@ -12,6 +12,12 @@ When you want to start a new server you need to extend the abstract class "NESer
 
 ```java
 public class ServerManager extends NEServerManager {
-
+  
+  public ServerManager(int tcpPort, int udpPort) {
+    super(tcpPort, udpPort);
+  }
+  
 }
 ```
+
+This will begin running a basic server on the TCP and UDP ports specified in the constructor. 
