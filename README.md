@@ -121,10 +121,10 @@ public static void main(String[] args) {
 	new ClientManager("localhost", 4395, 4395);
 }
 ```
-We are now done with our basic client. If you have followed along correctly you should be able to start a server and connect to it from the client side. It doesn't do much right now but I will introduce modularity in the library and show you how to create new events and send them to the client and server. 
+We are now done with our basic client. If you have followed along correctly you should be able to start a server and connect to it from the client side. It doesn't do much right now but I will introduce modularity and show you how to create new events and send them to the client and server. 
 
 ## Modularity - Creating A Module
-Modules are similar to plugins in which they allow you to add new functionality to your applications. They are exported as .jar files and loaded at runtime by your application. Modules not only make the code very organized but they also make the code reusable. You can make a registration module for one application and go and use it in another without there being any errors. To create a module you need to extend the abstract NEServerModule class which makes you override the abstract init method. The init method is the starting point for the module and is where you will put any events you want to register and code you want to run. 
+Modules allow you to add new functionality to your applications. Modules not only make the code very organized but they also make the code reusable. You can make a registration module for one application and go and use it in another without there bring any complications. To create a module you need to extend the abstract NEServerModule class which makes you override the abstract init method. The init method is the starting point for the module and is where you will put any events you want to register and code you want to run. 
 ```java
 
 ```
