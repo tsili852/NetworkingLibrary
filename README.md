@@ -68,8 +68,59 @@ From this point we want to add the Room to the Zone to let the Zone handle it. I
 public MyZone() {
 	super("MyZone");
 	MyRoom room = new MyRoom("MyRoom", this);
-	addRoom(room);
+	try {
+		addRoom(room);
+	} catch (NERoomExistsException | NEMaxRoomLimitException e) {
+		e.printStackTrace();
+	}
 }
 ```
-This creates a new MyRoom object and adds it to the zone. Now the zone will handle all incoming packets and send them to the room. 
+This creates a new MyRoom object and adds it to the zone. Now the zone will handle all incoming packets and send them to the room. You'll also notice I took out the constructor parameter and placed "MyZone" in the place of it so that the name of the zone is static. When you add a room to a zone there is a chance that either the max amount of rooms in the zone was reached or the room was already added to the zone. If one of those two cases is true it will throw an exception. We now just need to create a new MyZone object in the ServerManager to instantiate it.
 
+```java
+public class ServerManager extends NEServerManager {
+  
+  	private final MyZone myZone;
+  
+	public ServerManager(int tcpPort, int udpPort) {
+		super(tcpPort, udpPort);
+		myZone = new MyZone();
+		System.out.println("Server Started.");
+  	}
+  
+}
+```
+
+When a new Zone is instantiated it is automatically added to the ZoneManager which will be used by the server when receiving events.
+
+Our basic server is officially finished. We created a Zone and a Room, added the room to the zone, and are now just waiting for incoming events. When running this server application nothing special will happen. This is because we have no client connecting to the server and no packets being sent.
+
+## Starting A Client
+
+The client is the side of the program that will connect to the server to send and receive packets of information. Setting up the client is very simple and all you must do is specify the IP address, TCP port, and UDP port to connect to. We also need to create a new class that will extend "NEClientManager". NEClientManager is an abstract class that takes care of connecting to the server and starting the threads to handle incoming TCP and UDP information.
+
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		connect();
+		if(client.isConnected()) {
+			System.out.println("Connected to server.");
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
+In the background this will create a new Client and connect to the server. It will then check to see if we are connected or not. We also need to create a main method to instantiate the ClientManager and start the client.
+
+```java
+public static void main(String[] args) {
+	new ClientManager("localhost", 4395, 4395);
+}
+```
+We are now done with our basic client. If you have followed along correctly you should be able to start a server and connect to it from the client side. It doesn't do much right now but I will introduce modularity in the library and show you how to create new events and send them to the client and server. 
+
+## Modularity - Creating A Module
