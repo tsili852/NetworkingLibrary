@@ -13,9 +13,9 @@ When you want to start a new server you need to extend the abstract class "NESer
 ```java
 public class ServerManager extends NEServerManager {
   
-  public ServerManager(int tcpPort, int udpPort) {
-    super(tcpPort, udpPort);
-  }
+	public ServerManager(int tcpPort, int udpPort) {
+		super(tcpPort, udpPort);
+  	}
   
 }
 ```
@@ -24,7 +24,7 @@ This will begin running a basic server on the TCP and UDP ports specified in the
 
 ```java
 public static void main(String[] args) {
-  new ServerManager(4395, 4395);
+	new ServerManager(4395, 4395);
 }
 ```
 
@@ -38,7 +38,7 @@ Zone:
 ```java
 public class MyZone extends Zone {
 
-  public MyZone(String name) {
+	public MyZone(String name) {
 		super(name);
 	}
 
@@ -62,3 +62,14 @@ public class MyRoom extends Room {
 	
 }
 ```
+
+From this point we want to add the Room to the Zone to let the Zone handle it. In our Zone class we will do this:
+```java
+public MyZone() {
+	super("MyZone");
+	MyRoom room = new MyRoom("MyRoom", this);
+	addRoom(room);
+}
+```
+This creates a new MyRoom object and adds it to the zone. Now the zone will handle all incoming packets and send them to the room. 
+
