@@ -8,4 +8,10 @@ This networking library runs on Desktop and on Android.
 
 ## Starting A Server
 
-When you want to start a new server you need to extend the abstract class "NEServerManager" which will handles all threads and prep the server for incoming clients. 
+When you want to start a new server you need to extend the abstract class "NEServerManager" which will handle all threads and prep the server for incoming clients. 
+
+```java
+public class ServerManager extends NEServerManager {
+
+}
+```
