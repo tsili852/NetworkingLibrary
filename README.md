@@ -49,15 +49,8 @@ Room:
 ```java
 public class MyRoom extends Room {
 
-	public MyRoom() {
-	}
-	
 	public MyRoom(String name, Zone parentZone) {
 		super(name, parentZone);
-	}
-	
-	public MyRoom(String name, Zone parentZone, RoomSettings roomSettings) {
-		super(name, parentZone, roomSettings);
 	}
 	
 }
@@ -124,7 +117,36 @@ public static void main(String[] args) {
 We are now done with our basic client. If you have followed along correctly you should be able to start a server and connect to it from the client side. It doesn't do much right now but I will introduce modularity and show you how to create new events and send them to the client and server. 
 
 ## Modularity - Creating A Module
-Modules are similar to plugins in which they allow you to add new functionality to your applications. They are exported as .jar files and loaded at runtime by your application. Modules not only make the code very organized but they also make the code reusable. You can make a registration module for one application and go and use it in another without there being any errors. To create a module you need to extend the abstract NEServerModule class which makes you override the abstract init method. The init method is the starting point for the module and is where you will put any events you want to register and code you want to run.  
+Modules are similar to plugins in which they allow you to add new functionality to your applications. They are exported as .jar files and loaded at runtime by your application. Modules not only make the code very organized but they also make the code reusable. You can make a registration module for one application and go and use it in another without there being any errors. To create a module you need to extend the abstract NEServerModule class which makes you override the abstract init method. The init method is the starting point for the module and is where you will put any events you want to register and code you want to run. Keep in mind when creating a module it needs to be in a separate project from your Server and Client because it needs to be exported as a .jar file. 
 ```java
+public class MyModule extends NEServerModule {
 
+	@Override
+	public void init() {
+		System.out.println("My Module loaded.");
+	}
+
+}
 ```
+
+It is as easy as that. Now when the module is loaded it will call the init method and print out "My Module loaded." Modules can be attached to Rooms or Zones and will be ran inside of them. Before we can load it onto a Zone or Room we need to export the project as a .jar file. For Eclipse users you can right click on the project, go to export, go to Java, and then go to Jar. Make sure you DO NOT go to "Runnable Jar". Loading a module is very simple and the only thing you have to specify is the location of the .jar file and the class that extends NEServerModule. Inside of the MyRoom class we will load the module and have it run in the Room.
+
+```java
+public class MyRoom extends Room {
+
+	public MyRoom(String name, Zone parentZone) {
+		super(name, parentZone);
+		try {
+			loadModule("modules/MyModule.jar", "com.net.MyModule");
+		} catch (NEException e) {
+			e.printStackTrace();
+		}
+	}
+	
+}
+```
+I placed my module's jar file in a folder called "modules" within my Server project. The location of my MyModule class is in the package "com.net" which was why I placed that infront of the class name. Now when you run the Server it should print out "My Module loaded." 
+
+Soon, using these modules, you will be able to listen to incoming events and handle them accordingly. 
+
+## Event Listeners and Event Handlers
