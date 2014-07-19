@@ -437,3 +437,25 @@ public class MyModule extends NEServerModule {
 If you re-export and run your server and client the server should print out "5 + 7 = 12".
 
 ## Predefined Requests and Responses
+There are two predefined requests and responses that are handled by the library for you. 
+
+-JoinZoneRequest and JoinZoneResponse
+-JoinRoomRequest and JoinRoomResponse
+
+They all do exactly what they sound like. Creating a JoinZoneRequest asks the server to join a zone with the given zone name, username, and password. Creating a JoinRoomRequest asks the server to join a room with the given room name. Before a user can join a room though he needs to be in a zone. If the room being requested to join doesn't exist in their zone the request will not go through. 
+
+## Predefined Events
+There are many predefined events in the library that take care of some functionalities like joining a room. The NEEvent class contains all of the predefined packet names that are either sent to a client or used on the server:
+
+-USER_JOIN_ROOM : Sent to a client when a new user joins their room.
+-USER_LEAVE_ROOM : Sent to a client when a user leaves their room.
+-USER_VARIABLE_UPDATE : Sent to a client when a user's variable is requested to be changed.
+-ON_ROOM_JOIN : Sent to a client that requested to join a room and was successful.
+-ON_ROOM_JOIN_ERROR : Sent to a client that requested to join a room and was unsuccessful.
+-ON_JOIN_ZONE : Sent to a client that requested to join a zone and was successful.
+-ON_JOIN_ZONE_ERROR : Sent to a client that requested to join a zone and was unsuccessful.
+-NEW_USER_CONNECTED : Called on server when a new user connects.
+-ERROR_MESSAGE : Not an event, a key used to get the error value of the ON_ROOM_JOIN_ERROR event and ON_ZONE_JOIN_ERROR event.
+
+
+
