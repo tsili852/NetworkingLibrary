@@ -233,4 +233,34 @@ public class ClientManager extends NEClientManager {
 }
 ```
 
-You will notice that I removed the Packet object we created earlier and replaced it with a NEPacket but kept the packet name the same. From there we accessed the NEPacket's NEObject variable called "vars" and put in two new values. The first variable we put in was "Hello" with "key1" as the key. The second variable we put in was "World" with "key2" as the key. 
+You will notice that I removed the Packet object we created earlier and replaced it with a NEPacket but kept the packet name the same. From there we accessed the NEPacket's NEObject variable called "vars" and put in two new values. The first variable we put in was "Hello" with "key1" as the key. The second variable we put in was "World" with "key2" as the key. After that we sent the packet to the server. 
+
+All that needs to be done now is receive it from the server side. Lets go ahead and make a few changes to MyEventListener in MyModule.
+
+```java
+public class MyEventListener implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return "myPacket";
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		NEPacket nePacket = (NEPacket) packet;
+		String key1 = nePacket.vars.getString("key1");
+		String key2 = nePacket.vars.getString("key2");
+		System.out.println("Got: " + key1 + " " + key2);
+	}
+
+}
+```
+You will see many changes in the "handlePacket" method. The first thing we did was cast the Packet object to an NEPacket because NEPacket extends Packet. After that we accessed the NEObject and used the "getString" method to get the value of the "key1" key. We then did the same to get the value of the "key2" key.  Finally we printed out what was held in those values. If all went well it should print out "Got; Hello World."
+
+## Listening on the Client
+Waiting for packets to be sent to the client works the same way as the server except the event listener's are not contained in a separate module. Lets create a new event listener on the client side.
+
+```java
+
+```
+
