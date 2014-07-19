@@ -452,10 +452,20 @@ There are many predefined events in the library that take care of some functiona
 - USER_VARIABLE_UPDATE : Sent to a client when a user's variable is requested to be changed.
 - ON_ROOM_JOIN : Sent to a client that requested to join a room and was successful.
 - ON_ROOM_JOIN_ERROR : Sent to a client that requested to join a room and was unsuccessful.
-- ON_JOIN_ZONE : Sent to a client that requested to join a zone and was successful.
-- ON_JOIN_ZONE_ERROR : Sent to a client that requested to join a zone and was unsuccessful.
+- ON_ZONE_JOIN : Sent to a client that requested to join a zone and was successful.
+- ON_ZONE_JOIN_ERROR : Sent to a client that requested to join a zone and was unsuccessful.
 - NEW_USER_CONNECTED : Called on server when a new user connects.
 - ERROR_MESSAGE : Not an event, a key used to get the error value of the ON_ROOM_JOIN_ERROR event and ON_ZONE_JOIN_ERROR event.
 
 
+## Predefined Requests and Responses
+Just like there are predefined events there are 2 predefined requests and responses:
 
+- JoinZoneRequest and JoinZoneResponse
+- JoinRoomRequest and JoinRoomResponse
+
+They do exactly what they say. When a new JoinZoneRequest is created you must specify the zone name that is desired to be joined, the desired username, and the password. The response will handle the information and if the zone exists and the username is not already connected, it will be successful and send you a ON_ZONE_JOIN event. If it is not successful it will send you a ON_ZONE_JOIN_ERROR event. 
+
+When creating and sending a new JoinRoomRequest you must specify the room name. The response will handle the information sent and if the user is in a zone, the zone contains the room, and the max amount of users isn't reached, it will send you a ON_ROOM_JOIN event. Otherwise it will send you a ON_ROOM_JOIN_ERROR event.
+
+## Joining A Room and Zone
