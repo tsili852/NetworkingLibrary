@@ -447,7 +447,7 @@ They all do exactly what they sound like. Creating a JoinZoneRequest asks the se
 ## Predefined Events
 There are many predefined events in the library that take care of some functionalities like joining a room. The NEEvent class contains all of the predefined packet names that are either sent to a client or used on the server:
 
--USER_JOIN_ROOM : Sent to a client when a new user joins their room.
+- [USER_JOIN_ROOM : Sent to a client when a new user joins their room.]
 -USER_LEAVE_ROOM : Sent to a client when a user leaves their room.
 -USER_VARIABLE_UPDATE : Sent to a client when a user's variable is requested to be changed.
 -ON_ROOM_JOIN : Sent to a client that requested to join a room and was successful.
