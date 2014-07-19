@@ -38,20 +38,9 @@ public abstract class NEClientManager {
 		
 		listener = new ClientListener(this);
 		client.setListener(listener);
-		
-		/*client.getKryo().register(Packet.class);
-		client.getKryo().register(HashMap.class);
-		client.getKryo().register(NEObject.class);
-		client.getKryo().register(NEPacket.class);
-		client.getKryo().register(User.class);
-		client.getKryo().register(Room.class);
-		client.getKryo().register(UserManager.class);
-		client.getKryo().register(String[].class);
-		client.getKryo().register(RoomSettings.class);
-		client.getKryo().register(ArrayList.class);
-		*/
 	}
 	
+	/** Connects to the server and sets the client-side user with the server connection. */
 	public void connect() {
 		if (client.getServerConnection() == null) {
 			client.connect();
@@ -67,7 +56,7 @@ public abstract class NEClientManager {
 	/** Adds an event listener to the event handler.
 	 * @param el The event listener object.
 	 */
-	public void addListener(IEventListener el) {
+	public void addEventListener(IEventListener el) {
 		listener.getEventHandler().addListener(el);
 	}
 	

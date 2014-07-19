@@ -18,17 +18,6 @@ public abstract class NEServerManager {
 		server = new Server(tcp, udp);
 		listener = new ServerListener();
 		server.setListener(listener);
-			
-			/*server.getKryo().register(Packet.class);
-			server.getKryo().register(HashMap.class);
-			server.getKryo().register(NEObject.class);
-			server.getKryo().register(NEPacket.class);
-			server.getKryo().register(User.class);
-			server.getKryo().register(Room.class);
-			server.getKryo().register(UserManager.class);
-			server.getKryo().register(String[].class);
-			server.getKryo().register(RoomSettings.class);
-			server.getKryo().register(ArrayList.class);*/
 	}
 
 	/** @returns instance of the listener */

@@ -12,9 +12,16 @@ import com.jmr.wrapper.server.ConnectionManager;
 
 public class UdpReadThread implements Runnable {
 
+	/** Instance of the UDP Socket. */
 	private DatagramSocket udpSocket;
+	
+	/** Instance of the Socket. */
 	private final NESocket socket;
 	
+	/** Creates a new thread to wait for UDP packets on the connection.
+	 * @param socket Instance of the socket.
+	 * @param udpSocket Instance of the UDP socket. 
+	 */
 	public UdpReadThread(NESocket socket, DatagramSocket udpSocket) {
 		this.udpSocket = udpSocket;
 		this.socket = socket;

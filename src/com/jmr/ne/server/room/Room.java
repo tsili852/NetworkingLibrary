@@ -14,9 +14,9 @@ import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.IUserController;
 import com.jmr.ne.common.user.User;
 import com.jmr.ne.common.user.UserManager;
-import com.jmr.ne.module.ModuleLoader;
-import com.jmr.ne.module.NEServerModule;
 import com.jmr.ne.server.database.Database;
+import com.jmr.ne.server.module.ModuleLoader;
+import com.jmr.ne.server.module.NEServerModule;
 import com.jmr.ne.server.zone.Zone;
 
 public class Room implements IUserController, Serializable{
@@ -191,7 +191,7 @@ public class Room implements IUserController, Serializable{
 	 * @param classPath The path to the class File that is the start of the module.
 	*/
 	public void loadModule(String modulePath, String classPath) throws NEException { 
-		module = ModuleLoader.getInstance().loadModule(new File("modules/" + modulePath), classPath);
+		module = ModuleLoader.getInstance().loadModule(new File(modulePath), classPath);
 
 		if (module != null) { 
 			if (!(module instanceof NEServerModule)) {

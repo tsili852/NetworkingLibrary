@@ -21,10 +21,10 @@ public abstract class BaseRequest {
 
 	/** Checks for and throws exceptions.
 	 * @throws NEException exception thrown while validating. */
-	public abstract void validate() throws NEException;
+	protected abstract void validate() throws NEException;
 
 	/** Executes a packet and sends the packet. */
-	public abstract void execute(Connection con);
+	protected abstract void execute(Connection con);
 	
 	/** Sends a packet to the connection
 	 * @param con The connection to send the packet.

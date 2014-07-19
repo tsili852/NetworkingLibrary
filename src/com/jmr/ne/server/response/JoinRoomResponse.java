@@ -44,7 +44,7 @@ public class JoinRoomResponse extends RoomResponse {
 		}
 		
 		try {
-			room.addUser(user);			
+			room.addUser(user);	
 			
 			NEPacket response = new NEPacket(NEEvent.ON_ROOM_JOIN);
 			response.vars.put("room", room);
@@ -54,7 +54,6 @@ public class JoinRoomResponse extends RoomResponse {
 			joinAlert.vars.put("newUser", user);
 			joinAlert.vars.put("room", room.getName());
 			
-			//Alerts all the other users that this user has joined the room
 			for(User u : room.getUsers()) {
 				if (u != user)
 					u.sendTCP(joinAlert);

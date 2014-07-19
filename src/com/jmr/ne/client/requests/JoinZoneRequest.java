@@ -1,4 +1,4 @@
-package com.jmr.ne.client.request;
+package com.jmr.ne.client.requests;
 
 import com.jmr.ne.common.exceptions.NEException;
 import com.jmr.ne.common.request.RoomRequest;
@@ -20,22 +20,17 @@ public class JoinZoneRequest extends RoomRequest {
 		this.password = password;
 	}
 	
-	/** @return The name of the packet. */
 	@Override
 	public String getName() {
 		return "joinZoneRequest";
 	}
 	
-	/** Checks if the zone is null and throws an exception if it is. */
 	@Override
 	public void validate() throws NEException {
 		if (zoneName == null || zoneName.equalsIgnoreCase(""))
 			throw new NEException("Please set the zone name.");
 	}
 
-	/** Sends the request to the server.
-	 * @param con The connection to send the request.
-	 */
 	@Override
 	public void execute(Connection con) {
 		setZoneName(packet.vars, zoneName);

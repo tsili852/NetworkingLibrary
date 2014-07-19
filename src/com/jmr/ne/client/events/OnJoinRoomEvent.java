@@ -36,7 +36,7 @@ public class OnJoinRoomEvent implements IEventListener {
 		
 		Room room = (Room) ne.vars.getObject("room");
 		User myUser = (User) ne.vars.getObject("myUser");
-		clientManager.setMyUser(myUser);		
+		clientManager.setMyUser(myUser);
 	}
 
 }

@@ -13,7 +13,8 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	private transient Session session; //all of the connection info
+	/** Holds all user connection information */
+	private transient Session session;
 	
 	/** User variables */
 	private NEObject vars = new NEObject();
@@ -179,6 +180,9 @@ public class User implements Serializable{
 		this.isGuest = isGuest;
 	}
 	
+	/** Sets the session of the user.
+	 * @param con The connection of the user.
+	 */
 	public void setSession(Connection con) {
 		session = new Session(con);
 	}

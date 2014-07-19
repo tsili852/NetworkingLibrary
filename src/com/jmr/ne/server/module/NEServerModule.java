@@ -1,4 +1,4 @@
-package com.jmr.ne.module;
+package com.jmr.ne.server.module;
 
 import com.jmr.ne.common.event.EventHandler;
 import com.jmr.ne.common.event.IEventListener;

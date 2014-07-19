@@ -1,4 +1,4 @@
-package com.jmr.ne.client.request;
+package com.jmr.ne.client.requests;
 
 import com.jmr.ne.common.exceptions.NEException;
 import com.jmr.ne.common.request.RoomRequest;

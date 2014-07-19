@@ -8,9 +8,16 @@ import com.jmr.wrapper.server.Server;
 
 public class AcceptedSocketThread implements Runnable {
 
+	/** Instance of the TCP socket. */
 	private final Socket socket;
+	
+	/** Instance of the Server object. */
 	private final Server server;
 
+	/** Creates a new thread when a new socket arrives.
+	 * @param server Instance of the server.
+	 * @param socket Instance of the socket.
+	 */
 	public AcceptedSocketThread(Server server, Socket socket) {
 		this.socket = socket;
 		this.server = server;

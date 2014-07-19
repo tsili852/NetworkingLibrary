@@ -54,22 +54,15 @@ public class VariableChangeRequest extends RoomRequest {
 	}
 
 	@Override
-	/** @return the name of the packet. */
 	public String getName() {
 		return NEEvent.USER_VARIABLE_UPDATE.toString();
 	}
 
 	@Override
-	/** Checks for errors.
-	 * @throws NEException No error checking so never thrown.
-	 */
 	public void validate() throws NEException {
 		
 	}
 
-	/** Executes and sends the packet.
-	 * @param con The connection to send it to.
-	 */
 	@Override
 	public void execute(Connection con) {
 		setRoomName(packet.vars, room);

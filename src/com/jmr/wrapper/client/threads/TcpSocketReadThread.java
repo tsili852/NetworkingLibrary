@@ -10,9 +10,16 @@ import com.jmr.wrapper.server.threads.ReceivedThread;
 
 public class TcpSocketReadThread implements Runnable {
 
+	/** Instance of the client object. */
 	private final Client client;
+	
+	/** Instance of the connection to the server. */
 	private final Connection serverConnection;
 	
+	/** Creates a new thread to wait for incoming TCP packets.
+	 * @param client Instance of the client.
+	 * @param serverConnection Instance of the server connection.
+	 */
 	public TcpSocketReadThread(Client client, Connection serverConnection) {
 		this.client = client;
 		this.serverConnection = serverConnection;

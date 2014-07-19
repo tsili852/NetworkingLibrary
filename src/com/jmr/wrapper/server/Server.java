@@ -15,12 +15,25 @@ import com.jmr.wrapper.server.threads.UdpReadThread;
 
 public class Server implements NESocket {
 
+	/** Used to manage and run threads. */
 	private final ExecutorService mainExecutor;
+	
+	/** The UDP port of the server. */
 	private final int udpPort;
+	
+	/** The TCP socket. */
 	private ServerSocket tcpSocket;
+	
+	/** The UDP socket. */
 	private DatagramSocket udpSocket;
+	
+	/** The listener object. */
 	private IListener listener;
 	
+	/** Starts a new server on the TCP and UDP port.
+	 * @param tcpPort The TCP port.
+	 * @param udpPort The UDP port.
+	 */
 	public Server(int tcpPort, int udpPort) {
 		try {
 			tcpSocket = new ServerSocket(tcpPort);
@@ -40,6 +53,9 @@ public class Server implements NESocket {
 		}
 	}
 	
+	/** Sets the listener object.
+	 * @param listener The listener.
+	 */
 	public void setListener(IListener listener) {
 		this.listener = listener;
 	}
@@ -49,6 +65,7 @@ public class Server implements NESocket {
 		return listener;
 	}
 	
+	@Override
 	public boolean isConnected() {
 		return udpSocket.isConnected() && tcpSocket != null;
 	}

@@ -30,11 +30,7 @@ public class ServerListener implements IListener {
 		serverEventHandler.addListener(new JoinZoneResponse());
 		serverEventHandler.addListener(new JoinRoomResponse());
 	}
-	
-	/** Inherited method that waits for incoming packets.
-	 * @param con The connection the received packet came from.
-	 * @param object The object sent.
-	 */
+
 	@Override
 	public void received (Connection con, Object object) {
 		if (object instanceof Packet) {
@@ -71,10 +67,7 @@ public class ServerListener implements IListener {
 			} 
 		}
 	}
-	
-	/** Inherited method called when a new client connects. 
-	 * @param con The Connection object of the client
-	 */
+
 	@Override
 	public void connected(Connection con) {
 		User user = userManager.getOrCreateUser(con); //Creates the user

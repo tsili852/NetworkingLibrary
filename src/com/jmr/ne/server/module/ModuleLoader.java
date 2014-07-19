@@ -1,4 +1,4 @@
-package com.jmr.ne.module;
+package com.jmr.ne.server.module;
 
 import java.io.File;
 import java.lang.reflect.Constructor;

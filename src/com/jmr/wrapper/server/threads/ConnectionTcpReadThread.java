@@ -8,10 +8,19 @@ import com.jmr.wrapper.server.Server;
 
 public class ConnectionTcpReadThread implements Runnable {
 
+	/** Isntance of the connection. */
 	private final Connection con;
+	
+	/** Instance of the server. */
 	private final Server server;
+	
+	/** The input stream of the connection. */
 	private ObjectInputStream in;
 	
+	/** Creates a new thread to wait for incoming packets.
+	 * @param server Instance of the server.
+	 * @param con Instance of the connection.
+	 */
 	public ConnectionTcpReadThread(Server server, Connection con) {
 		this.con = con;
 		this.server = server;
