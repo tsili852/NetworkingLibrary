@@ -459,10 +459,10 @@ There are many predefined event names in the library that take care of some func
 
 
 ## Predefined Client-Side Events
-There are a few predefined client-side events that are included in the library. The events have been defined because they are either called a lot by the server or they will need to be used the same way in every application you make.
+There are also a few predefined client-side events that are included in the library. The events have been defined because they are either called a lot by the server or they will need to be used the same way in every application you make.
 
-- OnJoinRoomEvent : Takes care of setting your user variables correctly on the server side
-- OnUserVariableUpdateEvent : Called when a variable is requested to be changed using NEEvent.USER_VARIABLE_UPDATE
+- OnJoinRoomEvent : Takes care of setting your user variables correctly on the client side
+- OnUserVariableUpdateEvent : Called when a variable is requested to be changed on the client side using the event name NEEvent.USER_VARIABLE_UPDATE
 - UserJoinEvent : Called when a user joins the clients room. Adds the user to the room on the client side.
 - OnUserLeaveEvent : Called when a user leaves the clients room. Removes the user from the room on the client side.
 
@@ -474,10 +474,9 @@ Just like there are predefined events there are 2 predefined requests and respon
 - JoinZoneRequest and JoinZoneResponse
 - JoinRoomRequest and JoinRoomResponse
 
-They do exactly what they say. When a new JoinZoneRequest is created you must specify the zone name that is desired to be joined, the desired username, and the password. The response will handle the information and if the zone exists and the username is not already connected, it will be successful and send you a ON_ZONE_JOIN event. If it is not successful it will send you a ON_ZONE_JOIN_ERROR event. 
+They do exactly what they say. When a new JoinZoneRequest is created you must specify the zone name that is desired to be joined, the desired username, and the password. The response will handle the information and if the zone exists and the username is not already connected, it will be successful and send you an ON_ZONE_JOIN event. If it is not successful it will send you an ON_ZONE_JOIN_ERROR event. 
 
 When creating and sending a new JoinRoomRequest you must specify the room name. The response will handle the information sent and if the user is in a zone, the zone contains the room, and the max amount of users isn't reached, it will send you a ON_ROOM_JOIN event. Otherwise it will send you a ON_ROOM_JOIN_ERROR event.
-
 
 
 ## Joining A Room and Zone
@@ -505,7 +504,7 @@ public class ClientManager extends NEClientManager {
 	
 }
 ```
-This creates a new JoinZoneRequests with the specified zone name, username, and password, and sends it to the server. The server's JoinZoneResponse will handle the information and if it is successful it will send back a ON_ZONE_JOIN event. If it isn't it will send a ON_ZONE_JOIN_ERROR event. Lets create an event listener to wait for those two events on the client.
+This creates a new JoinZoneRequests with the specified zone name, username, and password, and sends it to the server. This time we are asking to join the zone "MyZone" which we created earlier. The server's JoinZoneResponse will handle the information and if it is successful it will send back an ON_ZONE_JOIN event. If it isn't it will send an ON_ZONE_JOIN_ERROR event. Lets create an event listener to wait for those two events on the client.
 
 ```java
 public class ZoneJoinEvent implements IEventListener {
@@ -550,7 +549,7 @@ public class ZoneJoinErrorEvent implements IEventListener {
 }
 ```
 
-Finally lets add these events to the event handler:
+If there is an error we are going to make a message dialog show up with the reason why. Finally lets add these events to the event handler:
 
 ```java
 public class ClientManager extends NEClientManager {
@@ -597,7 +596,7 @@ public class RoomJoinEvent implements IEventListener {
 }
 ```
 
-For the error listener:
+The Room that was joined is sent to the event with it's key as "room". For the error listener:
 ```java
 public class RoomJoinErrorEvent implements IEventListener {
 
@@ -647,3 +646,81 @@ public class ClientManager extends NEClientManager {
 ```
 
 Now, if you have followed everything correctly, if you start the server and then the client you should see the client print out "Joined zone succesfully." You should then see "Joined MyRoom successfully." If you try and connect another new client you should get an error because you already connected to the Zone with that username.
+
+## Custom Packets
+Say that you want to create a new packet that wants to hold specific information. Maybe a PositionPacket which will hold the x and y position specifically. There are a few things you need to do before you can start sending the packet back and forth from the server to client.
+
+Lets start by creating our PositionPacket class.
+```java
+public class PositionPacket extends Packet implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	public int x, y;
+	
+	public PositionPacket() {
+		super("positionPacket");
+	}
+	
+	public PositionPacket(int x, int y) {
+		super("positionPacket");
+		this.x = x;
+		this.y = y;
+	}
+	
+}
+```
+
+The number one thing that you have to do for every packet you want to send over is extend the Packet class or a subclass of it. If your class doesn't extend it then the server will not recognize it as an event. You must also implement the Serializable interface so that your class can be transfered over streams. The "serialVersionUID" variable must be in every class that implements Serializable and Eclipse can import that variable for you. Also another important thing is a Packet must ALWAYS have a default constructor. So a constructor with no variables. If it doesn't then it will not be able to be sent over. One final important thing is if they are in separate projets they must be in the same exact package on both sides. If they are not it will throw an error.
+
+When you want to send this packet over to the server and client, if the server and client projects are separate you need to have the exact same file in both projects. If you only have the packet's class on the server side and you send it to the client side which doesn't have it, the client won't recognized the object and it will throw an error.
+
+
+Lets send this packet over to the server from the client. We are going to modify the ClientManager to do so.
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		addEventListener(new ZoneJoinEvent());
+		addEventListener(new ZoneJoinErrorEvent());
+		addEventListener(new RoomJoinEvent());
+		addEventListener(new RoomJoinErrorEvent());
+		
+		connect();
+		if(client.isConnected()) {
+			JoinZoneRequest jzr = new JoinZoneRequest("MyZone", "MyUsername", "MyPassword");
+			try {
+				jzr.send(client.getServerConnection());
+			} catch (NEException e) {
+				e.printStackTrace();
+			}
+			PositionPacket pp = new PositionPacket(20, 10);
+			client.getServerConnection().sendTcp(pp);
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+
+}
+```
+After the JoinZoneRequest we create a new PositionPacket with x equal to 20 and y equal to 10 and we send it to the server. Now lets create a listener for it on the server side in MyModule.
+
+```java
+public class PositionEvent implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return "positionPacket";
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		PositionPacket pp = (PositionPacket) packet;
+		System.out.println(pp.x + " " + pp.y);
+	}
+
+}
+```
