@@ -20,8 +20,8 @@ This networking library runs on Desktop and on Android.
 - [Predefined Requests and Responses](#predefined-requests-and-responses)
 - [Joining A Room and Zone](#joining-a-room-and-zone)
 - [Custom Packets](#custom-packets)
-- [Conclusion](#conclusion)
 - [Connecting To A Database](#connecting-to-a-database)
+- [Conclusion](#conclusion)
 
 ## Starting A Server
 
