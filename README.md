@@ -21,6 +21,7 @@ This networking library runs on Desktop and on Android.
 - [Joining A Room and Zone](#joining-a-room-and-zone)
 - [Custom Packets](#custom-packets)
 - [Conclusion](#conclusion)
+- [Connecting To A Database](#connecting-to-a-database)
 
 ## Starting A Server
 
@@ -751,7 +752,7 @@ public class MyModule extends NEServerModule {
 Now if you re-export the module and run the server and client the server should print out "20 10".
 
 
-## Connecting To a Database
+## Connecting To A Database
 Databases allow you to save information and retrieve it very efficiently and quickly. Every room and zone can have a database loaded onto it which can be used later to perform queries. I will show you how to load a database but performing queries is a whole different subject. There are many tutorials online that can show you how to perform queries and what each will do. 
 
 I use Wamp Server to manage databases using PhpMyAdmin. To load a database make sure Wamp Server is running or another web development environment is. Inside of our room we are going to load a new database. 
