@@ -506,6 +506,7 @@ public class ZoneJoinEvent implements IEventListener {
 	@Override
 	public void handlePacket(User user, Packet packet) {
 		//Joined successfully. Lets request to join the room.
+		System.out.println("Joined zone successfully.");
 		JoinRoomRequest jrr = new JoinRoomRequest("MyRoom");
 		try {
 			jrr.send(user.getSession().getConnection());
@@ -539,3 +540,28 @@ public class ZoneJoinErrorEvent implements IEventListener {
 
 Finally lets add these events to the event handler:
 
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		addEventListener(new ZoneJoinEvent());
+		addEventListener(new ZoneJoinErrorEvent());
+		
+		connect();
+		if(client.isConnected()) {
+			JoinZoneRequest jzr = new JoinZoneRequest("MyZone", "MyUsername", "MyPassword");
+			try {
+				jzr.send(client.getServerConnection());
+			} catch (NEException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
