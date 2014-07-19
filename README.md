@@ -332,3 +332,77 @@ public class ClientManager extends NEClientManager {
 }
 ```
 In the beginning of the constructor we called the "addEventListener" and passed it a new ClientEventListener instance. Now if you re-export the MyModule and run the server and client the server should print "Got: Hello World" and then the client should print "Got: How are you today?"
+
+## Response and Requests
+Requests and responses work together to send information from the client side and receive it from the server side. You may be wondering what the difference is between that and just sending packets back and forth. Well response and requests are predefined and can't just be created during runtime like normal packets can. This is useful when you need to send information in many different places the same exact way. Examples of this are JoinZoneRequests and JoinRoomRequests which are already defined in the library and will be explained later. Requests are created and sent from the client side and Responses are created and receive requests on the server side. 
+
+To create a new request you need to extend the abstract class BaseRequest. This class contains an NEPacket to be sent and 3 abstract methods that will be inherited. Lets create a new request by creating a new class on the client side called AddRequest.
+
+```java
+public class AddRequest extends BaseRequest {
+
+	private int a, b;
+	
+	public AddRequest(int a, int b) {
+		this.a = a;
+		this.b = b;
+	}
+	
+	@Override
+	public String getName() {
+		return "addRequest";
+	}
+
+	@Override
+	protected void validate() throws NEException {
+		if (a == 0 || b == 0)
+			throw new NEException("A or B can't be set to 0.");
+	}
+
+	@Override
+	protected void execute(Connection con) {
+		packet.vars.put("a", a);
+		packet.vars.put("b", b);
+		con.sendTcp(packet);
+	}
+
+}
+```
+You will see the inherited methods "getName()", "validate()", and "execute(Connection con)". You will also see that I created a constructor for the class which asks for two integers as parameters. Creating a constructor is not necessary but I added one because this request will ask the server to add two numbers together. The "getName" method returns the name of the packet that will be sent to the server. This is the name the server will be waiting for. The validate method is called before the execute method is called and is used to check for any possible cases that have not been filled that need to be. If one of the cases is not filled you can throw a new NEException. In this case if "a" or "b" equals zero then it will throw a new exception. In the execute method we put the values "a" and "b" in the packet's NEObject and send it to the connection specified in the parameter.
+
+Now that that is finished lets go to the ClientManager and use it.
+
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		
+		connect();
+		if(client.isConnected()) {
+			System.out.println("Connected to server.");
+			AddRequest addRequest = new AddRequest(5, 7);
+			try {
+				addRequest.send(client.getServerConnection());
+			} catch (NEException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
+We removed the NEPacket that was being sent to the server and replaced it with our request. We first created a new AddRequest with 5 and 7 as the two numbers to add together. We then sent the AddRequest using the "send" method. We had to use a try and catch clause because the "validate" method has a possibility to throw a NEEexception. 
+
+
+
+
+
+
+
+
+
