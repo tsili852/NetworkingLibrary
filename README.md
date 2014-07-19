@@ -9,6 +9,8 @@ This networking library runs on Desktop and on Android.
 ## Table of Contents
 - [Starting A Server](#starting-a-server)
 - [Zones and Rooms](#zones-and-rooms)
+- [Starting A Client](#starting-a-client)
+- [Modularity - Creating A Module](#modularity---creating-a-module)
 
 
 ## Starting A Server
