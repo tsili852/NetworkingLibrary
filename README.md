@@ -6,6 +6,10 @@ This networking library that I developed provides an API for utilization of TCP 
 
 This networking library runs on Desktop and on Android.
 
+## Table of Contents
+- [Starting A Server](#Starting-A-Server)
+
+
 ## Starting A Server
 
 When you want to start a new server you need to extend the abstract class "NEServerManager" which will handle all threads and prep the server for incoming clients. 
@@ -724,3 +728,23 @@ public class PositionEvent implements IEventListener {
 
 }
 ```
+Just like every event listener we must register it. We are going to do so in our module.
+
+```java
+public class MyModule extends NEServerModule {
+
+	@Override
+	public void init() {
+		System.out.println("My Module loaded.");
+		addEventListener(new MyEventListener());
+		addEventListener(new AddResponse());
+		addEventListener(new PositionEvent());
+	}
+
+}
+```
+
+Now if you re-export the module and run the server and client the server should print out "20 10".
+
+
+## Conclusion
