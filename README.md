@@ -8,6 +8,7 @@ This networking library runs on Desktop and on Android.
 
 ## Table of Contents
 - [Starting A Server](#Starting-A-Server)
+- [Zones and Rooms](#Zones-and-Rooms)
 
 
 ## Starting A Server
