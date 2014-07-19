@@ -333,7 +333,7 @@ public class ClientManager extends NEClientManager {
 ```
 In the beginning of the constructor we called the "addEventListener" and passed it a new ClientEventListener instance. Now if you re-export the MyModule and run the server and client the server should print "Got: Hello World" and then the client should print "Got: How are you today?"
 
-## Response and Requests
+## Responses and Requests
 Requests and responses work together to send information from the client side and receive it from the server side. You may be wondering what the difference is between that and just sending packets back and forth. Well response and requests are predefined and can't just be created during runtime like normal packets can. This is useful when you need to send information in many different places the same exact way. Examples of this are JoinZoneRequests and JoinRoomRequests which are already defined in the library and will be explained later. Requests are created and sent from the client side and Responses are created and receive requests on the server side. 
 
 To create a new request you need to extend the abstract class BaseRequest. This class contains an NEPacket to be sent and 3 abstract methods that will be inherited. Lets create a new request by creating a new class on the client side called AddRequest.
@@ -398,11 +398,42 @@ public class ClientManager extends NEClientManager {
 ```
 We removed the NEPacket that was being sent to the server and replaced it with our request. We first created a new AddRequest with 5 and 7 as the two numbers to add together. We then sent the AddRequest using the "send" method. We had to use a try and catch clause because the "validate" method has a possibility to throw a NEEexception. 
 
+When running this it wont do anything because we haven't added a response on the server side so lets do that now. Responses are created by making a class extend the abstract class BaseResponse. It will provide you the same methods as an IEventListener which will be very familiar.  We are going to create a new class in MyModule called AddResponse which will extend BaseResponse 
 
+```java
+public class AddResponse extends BaseResponse {
 
+	@Override
+	public String getListeningPacketName() {
+		return "addRequest";
+	}
 
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		NEPacket nePacket = (NEPacket) packet;
+		int a = nePacket.vars.getInt("a");
+		int b = nePacket.vars.getInt("b");
+		System.out.println(a + " + " + b + " = " + (a + b));
+	}
 
+}
 
+```
 
+This is pretty straight forward. It simply waits for the request to come in and adds the number sent in the packet. Now we need to add the response to the module event handler.
 
+```java
+public class MyModule extends NEServerModule {
 
+	@Override
+	public void init() {
+		System.out.println("My Module loaded.");
+		addEventListener(new MyEventListener());
+		addEventListener(new AddResponse());
+	}
+
+}
+```
+If you re-export and run your server and client the server should print out "5 + 7 = 12".
+
+## Predefined Requests and Responses
