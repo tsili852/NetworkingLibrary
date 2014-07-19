@@ -577,7 +577,9 @@ public class RoomJoinEvent implements IEventListener {
 
 	@Override
 	public void handlePacket(User user, Packet packet) {
-        System.out.println("Joined " + user.getLastRoomJoined().getName() + " successfully.");
+		NEPacket ne = (NEPacket) packet;
+		Room r = (Room) ne.vars.getObject("room");
+        	System.out.println("Joined " + r.getName() + " successfully.");
 	}
 
 }
