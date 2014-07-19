@@ -565,3 +565,69 @@ public class ClientManager extends NEClientManager {
 	
 }
 ```
+If you run the server and then run the client you will see "Joined zone successfully" printed out. Now lets handle joining a room. It's the same thing as the zone so lets create listeners for the ON_ROOM_JOIN and ON_ROOM_JOIN_ERROR events:
+
+```java
+public class RoomJoinEvent implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return NEEvent.ON_ROOM_JOIN.toString();
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+        System.out.println("Joined " + user.getLastRoomJoined().getName() + " successfully.");
+	}
+
+}
+```
+
+For the error listener:
+```java
+public class RoomJoinErrorEvent implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return NEEvent.ON_ROOM_JOIN_ERROR.toString();
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+        NEPacket nePacket = (NEPacket) packet;
+		String error = nePacket.vars.getString(NEEvent.ERROR_MESSAGE.toString());
+		JOptionPane.showMessageDialog(null, error);
+	}
+
+}
+```
+
+Lastly lets add these listeners to the event handler:
+
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		addEventListener(new ZoneJoinEvent());
+		addEventListener(new ZoneJoinErrorEvent());
+		addEventListener(new RoomJoinEvent());
+		addEventListener(new RoomJoinErrorEvent());
+		
+		connect();
+		if(client.isConnected()) {
+			JoinZoneRequest jzr = new JoinZoneRequest("MyZone", "MyUsername", "MyPassword");
+			try {
+				jzr.send(client.getServerConnection());
+			} catch (NEException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
