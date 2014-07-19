@@ -150,3 +150,62 @@ I placed my module's jar file in a folder called "modules" within my Server proj
 Soon, using these modules, you will be able to listen to incoming events and handle them accordingly. 
 
 ## Event Listeners and Event Handlers
+The library is an event-based system so event listeners and event handlers manage the core functions of the library. The system works on the principle that every packet sent to the client or server has a packet name. The client/server waits for these packets and sends them to the event handlers. The event handlers find all of the event listeners waiting for the incoming packet name and send the packet to the listeners. From here the listeners handle the packet and do what they want with them. Every Zone, Room, and Module contains an event haddler which you can add event listeners to. This is where you will create your server and client communications.
+
+The first thing we will do is create a new event listener for the server. To create an event listener you need to have a class implement the IEventListener interface. This will have you implement the methods "getListeningPacketName()" and "handlePacket(User user, Packet packet)". We are going to create a new class called MyEventListener inside of our module and have it implement IEventListener. 
+
+```java
+public class MyEventListener implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return "myPacket";
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		System.out.println("Got the packet!");
+	}
+
+}
+
+```
+You will see that in the getListeningPacketName() method that it returns "myPacket". This is the name of the packet that we will be waiting to get sent to the server. When the packet comes in the handlePacket method is called and is passed two parameters, the User the packet came from and the Packet itself. For now we will just have it print out "Got the packet!". All we need to do now is add the event listener to the module which we will do in the MyModule class.
+
+```java
+public class MyModule extends NEServerModule {
+
+	@Override
+	public void init() {
+		System.out.println("My Module loaded.");
+		addEventListener(new MyEventListener());
+	}
+
+}
+```
+To update the code on the server you need to re-export it as a .jar file. To see some results we will send a packet from the client to the server with the name "myPacket". This should then trigger the event listeners "handlePacket" method to be called on the server side.
+
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		connect();
+		if(client.isConnected()) {
+			System.out.println("Connected to server.");
+			Packet packet = new Packet("myPacket");
+			client.getServerConnection().sendTcp(packet);
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
+After the portion where it checks if the client has connected you will see I added two new lines. The first line we created a new Packet object with the name being set as "myPacket". This is the most basic Packet object that can be created and doesn't hold any information other than the name. I will introduce more advanced Packets later. On the second line we use the Client object to get the server connection. Then we send it to the server over TCP.
+
+Now if you run the server and then run the client after the server side will print out "Got the packet!" Congratulations on creating your first basic networking application.
+
+## NEPacket and NEObject
+
+
