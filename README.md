@@ -444,8 +444,8 @@ There are two predefined requests and responses that are handled by the library 
 
 They all do exactly what they sound like. Creating a JoinZoneRequest asks the server to join a zone with the given zone name, username, and password. Creating a JoinRoomRequest asks the server to join a room with the given room name. Before a user can join a room though he needs to be in a zone. If the room being requested to join doesn't exist in their zone the request will not go through. 
 
-## Predefined Events
-There are many predefined events in the library that take care of some functionalities like joining a room. The NEEvent class contains all of the predefined packet names that are either sent to a client or used on the server:
+## Predefined Event Names
+There are many predefined event names in the library that take care of some functionalities like joining a room. The NEEvent class contains all of the predefined packet names that are either sent to a client or used on the server:
 
 - USER_JOIN_ROOM : Sent to a client when a new user joins their room.
 - USER_LEAVE_ROOM : Sent to a client when a user leaves their room.
@@ -458,6 +458,16 @@ There are many predefined events in the library that take care of some functiona
 - ERROR_MESSAGE : Not an event, a key used to get the error value of the ON_ROOM_JOIN_ERROR event and ON_ZONE_JOIN_ERROR event.
 
 
+## Predefined Client-Side Events
+There are a few predefined client-side events that are included in the library. The events have been defined because they are either called a lot by the server or they will need to be used the same way in every application you make.
+
+- OnJoinRoomEvent : Takes care of setting your user variables correctly on the server side
+- OnUserVariableUpdateEvent : Called when a variable is requested to be changed using NEEvent.USER_VARIABLE_UPDATE
+- UserJoinEvent : Called when a user joins the clients room. Adds the user to the room on the client side.
+- OnUserLeaveEvent : Called when a user leaves the clients room. Removes the user from the room on the client side.
+
+You don't need to know much about these events. I just wanted to tell you about them so that you are aware of how some client-sided information is getting changed.
+
 ## Predefined Requests and Responses
 Just like there are predefined events there are 2 predefined requests and responses:
 
@@ -467,6 +477,8 @@ Just like there are predefined events there are 2 predefined requests and respon
 They do exactly what they say. When a new JoinZoneRequest is created you must specify the zone name that is desired to be joined, the desired username, and the password. The response will handle the information and if the zone exists and the username is not already connected, it will be successful and send you a ON_ZONE_JOIN event. If it is not successful it will send you a ON_ZONE_JOIN_ERROR event. 
 
 When creating and sending a new JoinRoomRequest you must specify the room name. The response will handle the information sent and if the user is in a zone, the zone contains the room, and the max amount of users isn't reached, it will send you a ON_ROOM_JOIN event. Otherwise it will send you a ON_ROOM_JOIN_ERROR event.
+
+
 
 ## Joining A Room and Zone
 When wanting to join a room the first thing that needs to be done is to request to connect to the zone that the room is in. We are going to create a new JoinZoneRequest in the ClientManager once connected.
@@ -633,3 +645,5 @@ public class ClientManager extends NEClientManager {
 	
 }
 ```
+
+Now, if you have followed everything correctly, if you start the server and then the client you should see the client print out "Joined zone succesfully." You should then see "Joined MyRoom successfully." If you try and connect another new client you should get an error because you already connected to the Zone with that username.
