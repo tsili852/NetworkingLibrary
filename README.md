@@ -11,7 +11,16 @@ This networking library runs on Desktop and on Android.
 - [Zones and Rooms](#zones-and-rooms)
 - [Starting A Client](#starting-a-client)
 - [Modularity - Creating A Module](#modularity---creating-a-module)
-
+- [Event Listeners and Event Handlers](#event-listeners-and-event-handlers)
+- [NEPacket and NEObject](#nepacket-and-neobject)
+- [Listening on the Client](#listening-on-the-client)
+- [Responses and Requests](#responses-and-requests)
+- [Predefined Event Names](#predefined-event-names)
+- [Predefined Client-Side Events](#predefined-client---side-events)
+- [Predefined Requests and Responses](#predefined-requests-and-responses)
+- [Joining A Room and Zone](#joining-a-room-and-zone)
+- [Custom Packets](#custom-packets)
+- [Conclusion](#conclusion)
 
 ## Starting A Server
 
@@ -443,14 +452,6 @@ public class MyModule extends NEServerModule {
 ```
 If you re-export and run your server and client the server should print out "5 + 7 = 12".
 
-## Predefined Requests and Responses
-There are two predefined requests and responses that are handled by the library for you. 
-
--JoinZoneRequest and JoinZoneResponse
--JoinRoomRequest and JoinRoomResponse
-
-They all do exactly what they sound like. Creating a JoinZoneRequest asks the server to join a zone with the given zone name, username, and password. Creating a JoinRoomRequest asks the server to join a room with the given room name. Before a user can join a room though he needs to be in a zone. If the room being requested to join doesn't exist in their zone the request will not go through. 
-
 ## Predefined Event Names
 There are many predefined event names in the library that take care of some functionalities like joining a room. The NEEvent class contains all of the predefined packet names that are either sent to a client or used on the server:
 
@@ -750,4 +751,37 @@ public class MyModule extends NEServerModule {
 Now if you re-export the module and run the server and client the server should print out "20 10".
 
 
+## Connecting To a Database
+Databases allow you to save information and retrieve it very efficiently and quickly. Every room and zone can have a database loaded onto it which can be used later to perform queries. I will show you how to load a database but performing queries is a whole different subject. There are many tutorials online that can show you how to perform queries and what each will do. 
+
+I use Wamp Server to manage databases using PhpMyAdmin. To load a database make sure Wamp Server is running or another web development environment is. Inside of our room we are going to load a new database. 
+
+```java
+public class MyRoom extends Room {
+
+	public MyRoom(String name, Zone parentZone) {
+		super(name, parentZone);
+		try {
+			loadModule("modules/MyModule.jar", "com.net.MyModule");
+		} catch (NEException e) {
+			e.printStackTrace();
+		}
+		try {
+			setDatabase(new Database("jdbc:mysql://localhost/", "MyDatabase", "root", ""));
+		} catch (InstantiationException | IllegalAccessException | ClassNotFoundException | SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+}
+```
+
+We added a new line of code surrounded by a try-catch clause that instantiates a new database and sets it to the room. When a new Database object is instantiated it takes the url to the database as the first parameter, the name of the database as the second parameter, the username of the database as third parameter, and the password of the database as the fourth. If all of the information is correct it will connect to the database and allow you to perform queries through the database object. 
+
 ## Conclusion
+The library makes connecting to a server, sending packets, and listening for events very easy. Most of the work is done for you and the modularity aspect keeps the code organized and reusable. In the "examples" folder I have included an example of a chat room and registration application. They both connect to a database which is used to put in new user registrations and check to see if they exist when logging in. The check to see if a user exists on the chat room login side can always be changed to allow anyone to login regardless of whether they're registered or not. I'm sure you guys could figure this out (check the JoinZoneResponse on the server side. I removed the standard JoinZoneResponse and replaced it with a custom one.)
+
+If you have any questions please post below! I will be more than happy to assist you in developing your own networked application using this library. You can also fork the repo and send in new pull requests with additions or fixes to the library.
+
+Enjoy!
+-Jon R
