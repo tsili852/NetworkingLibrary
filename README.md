@@ -233,7 +233,7 @@ public class ClientManager extends NEClientManager {
 }
 ```
 
-You will notice that I removed the Packet object we created earlier and replaced it with a NEPacket but kept the packet name the same. From there we accessed the NEPacket's NEObject variable called "vars" and put in two new values. The first variable we put in was "Hello" with "key1" as the key. The second variable we put in was "World" with "key2" as the key. After that we sent the packet to the server. 
+You will notice that I removed the Packet object we created earlier and replaced it with a NEPacket but kept the packet name the same. From there we accessed the NEPacket's NEObject variable called "vars" and put in two new values. The first value we put in was "Hello" with "key1" as the key. The second value we put in was "World" with "key2" as the key. After that we sent the packet to the server. 
 
 All that needs to be done now is receive it from the server side. Lets go ahead and make a few changes to MyEventListener in MyModule.
 
@@ -255,12 +255,80 @@ public class MyEventListener implements IEventListener {
 
 }
 ```
-You will see many changes in the "handlePacket" method. The first thing we did was cast the Packet object to an NEPacket because NEPacket extends Packet. After that we accessed the NEObject and used the "getString" method to get the value of the "key1" key. We then did the same to get the value of the "key2" key.  Finally we printed out what was held in those values. If all went well it should print out "Got; Hello World."
+You will see many changes in the "handlePacket" method. The first thing we did was cast the Packet object to a NEPacket because NEPacket extends Packet. After that we accessed the NEObject and used the "getString" method to get the value of the "key1" key. We then did the same to get the value of the "key2" key.  Finally we printed out what was held in those values. If all went well it should print out "Got; Hello World."
 
 ## Listening on the Client
-Waiting for packets to be sent to the client works the same way as the server except the event listener's are not contained in a separate module. Lets create a new event listener on the client side.
+Waiting for packets to be sent to the client works the same way as the server except the event listener's are not contained in a separate module. First we are going to send a response to the client from the server once the "myPacket" packet is received.
 
 ```java
+public class MyEventListener implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return "myPacket";
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		NEPacket nePacket = (NEPacket) packet;
+		String key1 = nePacket.vars.getString("key1");
+		String key2 = nePacket.vars.getString("key2");
+		System.out.println("Got: " + key1 + " " + key2);
+		NEPacket responsePacket = new NEPacket("serverPacket");
+		responsePacket.vars.put("response", "How are you today?");
+		user.sendTCP(responsePacket);
+	}
+
+}
+```
+I added in a few lines that will send a response to the client. First I created a new NEPacket with the name "serverPacket". I put a "response" key into the packet's NEObject with the value of "How are you today?" Finally we sent it back to the user over TCP.
+
+Lets move to the client side now and create a new event listener. I am going to name the class ClientEventListener.
+
+```java
+public class ClientEventListener implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return "serverPacket";
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		NEPacket nePacket = (NEPacket) packet;
+		String response = nePacket.vars.getString("response");
+		System.out.println("Got: " + response);
+	}
+
+}
 
 ```
+At this point I hope you can understand what is happening. We are waiting for the "serverPacket" to be received and when it is we retrieve the response value and print it out. All we have to do is add the event listener to the client.
 
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		
+		connect();
+		if(client.isConnected()) {
+			System.out.println("Connected to server.");
+			NEPacket nePacket = new NEPacket("myPacket");
+			nePacket.vars.put("key1", "Hello");
+			nePacket.vars.put("key2", "World");
+			client.getServerConnection().sendTcp(nePacket);
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+	public static void main(String[] args) {
+		new ClientManager("localhost", 4395, 4395);
+	}
+	
+}
+```
+In the beginning of the constructor we called the "addEventListener" and passed it a new ClientEventListener instance. Now if you re-export the MyModule and run the server and client the server should print "Got: Hello World" and then the client should print "Got: How are you today?"
