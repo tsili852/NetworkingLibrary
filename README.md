@@ -1,7 +1,7 @@
 Networking Library
 =================
 
-This networking library that I developed provides an API for utilization of TCP and UDP effectively and efficiently. It is an event-based library that makes listening for events on the server or client very simple. It is built ontop of a networking wrapper I developed which handles all server and client communication over TCP and UDP. To keep things organized and make applications more extendable the library is also modular.
+This networking library that I developed provides an API for utilization of TCP and UDP effectively and efficiently. It is an event-based library that makes listening for events on the server or client very simple. It is built ontop of a networking wrapper I developed which handles all server and client communication over TCP and UDP. To keep things organized and make applications more extendable the library is also modular. It also includes an API to connect and perform queries on a database. Below is a very detailed tutorial on how to use every aspect of the library.
 
 
 This networking library runs on Desktop and on Android.
