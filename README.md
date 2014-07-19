@@ -150,7 +150,7 @@ I placed my module's jar file in a folder called "modules" within my Server proj
 Soon, using these modules, you will be able to listen to incoming events and handle them accordingly. 
 
 ## Event Listeners and Event Handlers
-The library is an event-based system so event listeners and event handlers manage the core functions of the library. The system works on the principle that every packet sent to the client or server has a packet name. The client/server waits for these packets and sends them to the event handlers. The event handlers find all of the event listeners waiting for the incoming packet name and send the packet to the listeners. From here the listeners handle the packet and do what they want with them. Every Zone, Room, and Module contains an event haddler which you can add event listeners to. This is where you will create your server and client communications.
+The library is an event-based system so event listeners and event handlers manage the core functions of the library. The system works on the principle that every packet sent to the client or server has a packet name. The client/server waits for these packets and sends them to the event handlers. The event handlers find all of the event listeners waiting for the incoming packet name and send the packet to the listeners. From here the listeners handle the packet and do what they want with them. Every Zone, Room, and Module contains an event handler which you can add event listeners to. This is where you will create your server and client communications.
 
 The first thing we will do is create a new event listener for the server. To create an event listener you need to have a class implement the IEventListener interface. This will have you implement the methods "getListeningPacketName()" and "handlePacket(User user, Packet packet)". We are going to create a new class called MyEventListener inside of our module and have it implement IEventListener. 
 
@@ -170,7 +170,7 @@ public class MyEventListener implements IEventListener {
 }
 
 ```
-You will see that in the getListeningPacketName() method that it returns "myPacket". This is the name of the packet that we will be waiting to get sent to the server. When the packet comes in the handlePacket method is called and is passed two parameters, the User the packet came from and the Packet itself. For now we will just have it print out "Got the packet!". All we need to do now is add the event listener to the module which we will do in the MyModule class.
+You will see that in the getListeningPacketName() method that it returns "myPacket". This is the name of the packet that we will be waiting to get sent to the server. When the packet comes in the handlePacket method is called and is passed two parameters: the User the packet came from and the Packet itself. For now we will just have it print out "Got the packet!". All we need to do now is add the event listener to the module which we will do in the MyModule class.
 
 ```java
 public class MyModule extends NEServerModule {
@@ -202,10 +202,35 @@ public class ClientManager extends NEClientManager {
 	
 }
 ```
-After the portion where it checks if the client has connected you will see I added two new lines. The first line we created a new Packet object with the name being set as "myPacket". This is the most basic Packet object that can be created and doesn't hold any information other than the name. I will introduce more advanced Packets later. On the second line we use the Client object to get the server connection. Then we send it to the server over TCP.
+After the portion where it checks if the client has connected you will see I added two new lines. The first line we created a new Packet object with the name being set as "myPacket". This is the most basic Packet object that can be created and doesn't hold any information other than the name. I will introduce more advanced Packets later. On the second line we use the Client object to get the server connection and send it to the server over TCP.
 
 Now if you run the server and then run the client after the server side will print out "Got the packet!" Congratulations on creating your first basic networking application.
 
 ## NEPacket and NEObject
+NEObject is a class that lets you store and retreive custom variables. You can put new objects into the NEObject using the method "put(String key, Object value)." This will store the values and allow them to be sent over to the client or server. This is how you will transmit information back and forth very easily. 
 
+NEPacket is the more advanced and powerful packet which lets you send over any amount of information you want. The NEPacket extends the Packet object and contains a public NEObject variable inside of it. Using the NEObject you can store specific information from the client side and send it to the server side or vice-versa.
 
+Lets go back to the client side and send an NEPacket to the server. We will need to edit and add a few things.
+
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		connect();
+		if(client.isConnected()) {
+			System.out.println("Connected to server.");
+			NEPacket nePacket = new NEPacket("myPacket");
+			nePacket.vars.put("key1", "Hello");
+			nePacket.vars.put("key2", "World");
+			client.getServerConnection().sendTcp(nePacket);
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
+
+You will notice that I removed the Packet object we created earlier and replaced it with a NEPacket but kept the packet name the same. From there we accessed the NEPacket's NEObject variable called "vars" and put in two new values. The first variable we put in was "Hello" with "key1" as the key. The second variable we put in was "World" with "key2" as the key. 
