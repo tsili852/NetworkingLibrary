@@ -16,7 +16,7 @@ This networking library runs on Desktop and on Android.
 - [Listening on the Client](#listening-on-the-client)
 - [Responses and Requests](#responses-and-requests)
 - [Predefined Event Names](#predefined-event-names)
-- [Predefined Client-Side Events](#predefined-client---side-events)
+- [Predefined Client-Side Events](#predefined-client-side-events)
 - [Predefined Requests and Responses](#predefined-requests-and-responses)
 - [Joining A Room and Zone](#joining-a-room-and-zone)
 - [Custom Packets](#custom-packets)
