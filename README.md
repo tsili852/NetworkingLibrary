@@ -469,3 +469,73 @@ They do exactly what they say. When a new JoinZoneRequest is created you must sp
 When creating and sending a new JoinRoomRequest you must specify the room name. The response will handle the information sent and if the user is in a zone, the zone contains the room, and the max amount of users isn't reached, it will send you a ON_ROOM_JOIN event. Otherwise it will send you a ON_ROOM_JOIN_ERROR event.
 
 ## Joining A Room and Zone
+When wanting to join a room the first thing that needs to be done is to request to connect to the zone that the room is in. We are going to create a new JoinZoneRequest in the ClientManager once connected.
+```java
+public class ClientManager extends NEClientManager {
+
+	public ClientManager(String ip, int tcpPort, int udpPort) {
+		super(ip, tcpPort, udpPort);
+		
+		addEventListener(new ClientEventListener());
+		
+		connect();
+		if(client.isConnected()) {
+			JoinZoneRequest jzr = new JoinZoneRequest("MyZone", "MyUsername", "MyPassword");
+			try {
+				jzr.send(client.getServerConnection());
+			} catch (NEException e) {
+				e.printStackTrace();
+			}
+		} else {
+			System.out.println("Can not connect to server.");
+		}
+	}
+	
+}
+```
+This creates a new JoinZoneRequests with the specified zone name, username, and password, and sends it to the server. The server's JoinZoneResponse will handle the information and if it is successful it will send back a ON_ZONE_JOIN event. If it isn't it will send a ON_ZONE_JOIN_ERROR event. Lets create an event listener to wait for those two events on the client.
+
+```java
+public class ZoneJoinEvent implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return NEEvent.ON_ZONE_JOIN.toString();
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		//Joined successfully. Lets request to join the room.
+		JoinRoomRequest jrr = new JoinRoomRequest("MyRoom");
+		try {
+			jrr.send(user.getSession().getConnection());
+		} catch (NEException e) {
+			e.printStackTrace();
+		}
+	}
+
+}
+```
+
+If this event is called then we automatically want to join the room so we send a request to join the room "MyRoom". Now lets just check to see if there is an error.
+
+```java
+public class ZoneJoinErrorEvent implements IEventListener {
+
+	@Override
+	public String getListeningPacketName() {
+		return NEEvent.ON_ZONE_JOIN_ERROR.toString();
+	}
+
+	@Override
+	public void handlePacket(User user, Packet packet) {
+		NEPacket nePacket = (NEPacket) packet;
+		String error = nePacket.vars.getString(NEEvent.ERROR_MESSAGE.toString());
+		JOptionPane.showMessageDialog(null, error);
+	}
+
+}
+```
+
+Finally lets add these events to the event handler:
+
