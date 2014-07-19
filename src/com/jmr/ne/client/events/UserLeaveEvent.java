@@ -6,6 +6,15 @@ import com.jmr.ne.common.packet.NEPacket;
 import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.User;
 
+/**
+ * Networking Library
+ * UserLeaveEvent.java
+ * Purpose: Waits for a User Leave event and removes the client from the room.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class UserLeaveEvent implements IEventListener {
 
 	/** @return The NEEvent.USER_LEAVE_ROOM string that is being waited for. */

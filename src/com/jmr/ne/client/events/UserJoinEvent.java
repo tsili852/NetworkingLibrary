@@ -10,6 +10,15 @@ import com.jmr.ne.common.packet.NEPacket;
 import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.User;
 
+/**
+ * Networking Library
+ * UserJoinEvent.java
+ * Purpose: Waits for a new User Join event and adds them to the room.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class UserJoinEvent implements IEventListener {
 
 	/** @return The NEEvent.USER_JOIN_ROOM string that is being waited for. */

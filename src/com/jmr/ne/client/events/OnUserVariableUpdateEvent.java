@@ -6,6 +6,15 @@ import com.jmr.ne.common.packet.NEPacket;
 import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.User;
 
+/**
+ * Networking Library
+ * OnUserVariableUpdateEvent.java
+ * Purpose: Waits for a user variable change request and changes the user variables.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class OnUserVariableUpdateEvent implements IEventListener {
 
 	/** @return The NEEvent.USER_VARIABLE_UPDATE string that is being waited for. */

@@ -5,6 +5,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import com.jmr.ne.common.packet.Packet;
 import com.jmr.wrapper.common.Connection;
 
+/**
+ * Networking Library
+ * Session.java
+ * Purpose: Holds the connection and id of the User's session. Lets you send TCP and UDP packets.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class Session {
 
 	/** Counter used to set the ID of the session. */

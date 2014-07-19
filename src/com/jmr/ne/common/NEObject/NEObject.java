@@ -3,6 +3,15 @@ package com.jmr.ne.common.NEObject;
 import java.io.Serializable;
 import java.util.HashMap;
 
+/**
+ * Networking Library
+ * NEObject.java
+ * Purpose: Stores variables and allows them to be retrieved at any time.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class NEObject implements Serializable{
 
 	private static final long serialVersionUID = 1L;

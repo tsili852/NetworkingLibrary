@@ -8,6 +8,15 @@ import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.User;
 import com.jmr.ne.server.room.Room;
 
+/**
+ * Networking Library
+ * OnJoinRoomEvent.java
+ * Purpose: Waits for the join room event and sets the client-side user variables.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class OnJoinRoomEvent implements IEventListener {
 
 	/** Instanace of the client manager. */

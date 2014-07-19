@@ -9,6 +9,15 @@ import com.jmr.ne.server.room.Room;
 import com.jmr.ne.server.zone.Zone;
 import com.jmr.wrapper.common.Connection;
 
+/**
+ * Networking Library
+ * User.java
+ * Purpose: An object that holds all user information. The username, password, joined rooms, joined zone, and session information. Created automatically when a new connection to the server is made. 
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;

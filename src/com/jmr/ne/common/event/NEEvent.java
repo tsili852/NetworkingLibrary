@@ -1,5 +1,14 @@
 package com.jmr.ne.common.event;
 
+/**
+ * Networking Library
+ * NEEvent.java
+ * Purpose: Holds all of the predefined event names.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public enum NEEvent {
 	
 	/** A new user joins the room. Sent to Client. */

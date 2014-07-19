@@ -2,6 +2,15 @@ package com.jmr.ne.common.request;
 
 import com.jmr.ne.common.NEObject.NEObject;
 
+/**
+ * Networking Library
+ * RoomRequest.java
+ * Purpose: Sent to a server to request something specifically within a zone or room.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public abstract class RoomRequest extends BaseRequest {
 	
 	/** Sets the zone variable with the given name

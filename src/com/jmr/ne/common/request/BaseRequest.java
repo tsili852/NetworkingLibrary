@@ -5,6 +5,15 @@ import com.jmr.ne.common.exceptions.NEException;
 import com.jmr.ne.common.packet.NEPacket;
 import com.jmr.wrapper.common.Connection;
 
+/**
+ * Networking Library
+ * BaseRequest.java
+ * Purpose: Sent to the server to request something.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public abstract class BaseRequest {
 
 	/** New packet instance to be sent. */

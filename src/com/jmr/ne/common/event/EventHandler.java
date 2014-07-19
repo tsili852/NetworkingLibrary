@@ -8,6 +8,15 @@ import com.jmr.ne.common.packet.Packet;
 import com.jmr.ne.common.user.User;
 import com.jmr.ne.server.room.Room;
 
+/**
+ * Networking Library
+ * EventHandler.java
+ * Purpose: Holds event listeners and calls them when their event is received.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class EventHandler {
 
 	/** Array that holds all registered event listeners */

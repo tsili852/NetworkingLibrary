@@ -7,6 +7,15 @@ import com.jmr.ne.common.exceptions.NEGuestsNotAllowedException;
 import com.jmr.ne.common.exceptions.NEMaxUserLimitException;
 import com.jmr.ne.common.exceptions.NEUserDoesNotExistException;
 
+/**
+ * Networking Library
+ * IUserController.java
+ * Purpose: Implemented by any classes that want to incorporate a UserManager.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public interface IUserController {
 
 	/** @return The user array. */

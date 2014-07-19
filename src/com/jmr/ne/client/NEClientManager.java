@@ -5,6 +5,15 @@ import com.jmr.ne.common.event.IEventListener;
 import com.jmr.ne.common.user.User;
 import com.jmr.wrapper.client.Client;
 
+/**
+ * Networking Library
+ * NEClientManager.java
+ * Purpose: Starts a new client and connects to the server.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public abstract class NEClientManager {
 
 	/** IP Address to connect to. */
