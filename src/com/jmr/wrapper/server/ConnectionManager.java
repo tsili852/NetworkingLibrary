@@ -5,6 +5,16 @@ import java.util.ArrayList;
 
 import com.jmr.wrapper.common.Connection;
 
+/**
+ * Networking Library
+ * ConnectionManager.java
+ * Purpose: Holds all connections currently connected to the server. It is a Singleton and provides
+ * methods to get and receive information.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class ConnectionManager {
 
 	/** Instance of the class. */
@@ -38,8 +48,21 @@ public class ConnectionManager {
 		connections.add(con);
 	}
 	
+	/** Closes a specific connection.
+	 * @param con The connection to close.
+	 */
+	public void close(Connection con) {
+		con.close();
+		connections.remove(con);
+	}
+	
+	/** @return All connections. */
+	public ArrayList<Connection> getConnections() {
+		return connections;
+	}
+	
 	/** Closes all connections. */
-	public void close() {
+	public void closeAll() {
 		for (Connection con : connections) {
 			con.close();
 		}

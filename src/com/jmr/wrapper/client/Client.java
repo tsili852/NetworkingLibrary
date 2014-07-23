@@ -9,12 +9,26 @@ import java.net.UnknownHostException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.jmr.wrapper.client.threads.TcpSocketReadThread;
+import com.jmr.wrapper.client.threads.ClientTcpReadThread;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.common.IListener;
 import com.jmr.wrapper.common.NESocket;
+import com.jmr.wrapper.common.config.Config;
+import com.jmr.wrapper.encryption.Encryptor;
 import com.jmr.wrapper.server.ConnectionManager;
 import com.jmr.wrapper.server.threads.UdpReadThread;
+
+/**
+ * Networking Library
+ * Client.java
+ * Purpose: Starts a connection to a server and manages the TCP and UDP sockets. Provides
+ * methods to send packets over UDP and TCP and it also allows a listener to be set to wait 
+ * for new connections, disconnections, and packets. It also provides a method to set the 
+ * type of encryption being used if any.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class Client implements NESocket {
 
@@ -39,6 +53,12 @@ public class Client implements NESocket {
 	/** The connection to the server. */
 	private Connection serverConnection;
 	
+	/** The client-sided configurations. */
+	private ClientConfig clientConfig;
+	
+	/** The type of encryption to use when sending and receiving packets. */
+	private Encryptor encryptionMethod;
+	
 	/** Creates a new client sets the variables to be used to connect to a server later.
 	 * @param address The address to the server.
 	 * @param tcpPort The TCP port.
@@ -52,6 +72,7 @@ public class Client implements NESocket {
 		}
 		this.tcpPort = tcpPort;
 		this.udpPort = udpPort;
+		clientConfig = new ClientConfig();
 	}
 	
 	/** Connects to the server. */
@@ -65,17 +86,16 @@ public class Client implements NESocket {
 			tcpSocket = new Socket(address, tcpPort);
 			tcpSocket.setSoLinger(true, 0);
 			serverConnection = new Connection(udpPort, tcpSocket, udpSocket);
+			serverConnection.setNESocketInstance(this);
 			ConnectionManager.getInstance().addConnection(serverConnection);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
-			e.printStackTrace();
+			
 		}
 		mainExecutor = Executors.newCachedThreadPool();
 		
 		if (tcpSocket != null && tcpSocket.isConnected() && udpSocket != null) {
 			mainExecutor.execute(new UdpReadThread(this, udpSocket));
-			mainExecutor.execute(new TcpSocketReadThread(this, serverConnection));
+			mainExecutor.execute(new ClientTcpReadThread(this, serverConnection));
 			sendTcp("ConnectedToServer");
 			sendUdp("SettingUdpPort");
 		}
@@ -91,6 +111,21 @@ public class Client implements NESocket {
 	@Override
 	public IListener getListener() {
 		return listener;
+	}
+	
+	@Override
+	public Config getConfig() {
+		return clientConfig;
+	}
+	
+	@Override
+	public Encryptor getEncryptionMethod() {
+		return encryptionMethod;
+	}
+
+	@Override
+	public void setEncryptionMethod(Encryptor encryptor) {
+		this.encryptionMethod = encryptor;
 	}
 	
 	@Override

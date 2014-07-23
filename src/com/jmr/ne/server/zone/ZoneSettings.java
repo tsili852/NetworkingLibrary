@@ -1,6 +1,16 @@
 package com.jmr.ne.server.zone;
 
 
+/**
+ * Networking Library
+ * ZoneSettings.java
+ * Purpose: Holds the zone configurations that can be set to a zone to allow for specific 
+ * settings.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class ZoneSettings {
 	
 	/** Max users in the zone. */

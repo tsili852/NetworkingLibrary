@@ -17,6 +17,15 @@ import com.jmr.ne.server.zone.ZoneManager;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.common.IListener;
 
+/**
+ * Networking Library
+ * ServerListener.java
+ * Purpose: Waits for incoming packets, new connections, and disconnected connections.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class ServerListener implements IListener {
 
 	/** Handles all connections. */
@@ -85,7 +94,7 @@ public class ServerListener implements IListener {
 	/** Sends the NEEvent.USER_LEAVE_ROOM packet to all clients when a user disconnects.
 	 * @param user The user disconnecting.
 	 */
-	private void disconnect(User user) {
+	private void disconnectUser(User user) {
 		System.out.println("Disconnected: " +user.getUsername());
 		NEPacket packet = new NEPacket();
 		packet.name = NEEvent.USER_LEAVE_ROOM.toString();
@@ -108,7 +117,7 @@ public class ServerListener implements IListener {
 	public void disconnected(Connection con) {
 		User user = userManager.getOrCreateUser(con);
 		if (user.getCurrentZone() != null && user.getLastRoomJoined() != null) {
-			disconnect(user);
+			disconnectUser(user);
 		}
 		userManager.removeUser(con);
 	}

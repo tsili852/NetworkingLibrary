@@ -1,64 +1,56 @@
-package com.jmr.wrapper.server.threads;
+package com.jmr.wrapper.client.threads;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
+import com.jmr.wrapper.client.Client;
 import com.jmr.wrapper.common.Connection;
-import com.jmr.wrapper.common.NESocket;
-import com.jmr.wrapper.server.ConnectionManager;
+import com.jmr.wrapper.server.threads.DisconnectedThread;
+import com.jmr.wrapper.server.threads.ReceivedThread;
 
 /**
  * Networking Library
- * UdpReadThread.java
- * Purpose: Waits for incoming packets over UDP, decrypts the data if an encryptor is set, and 
- * checks if the checksums match to ensure that the objects are not corrupt.
+ * ClientTcpReadThread.java
+ * Purpose: Waits for new incoming TCP packets from the server. Decrypts them and passes them
+ * to the listener if the checksum's match.
  * 
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014
  */
 
-public class UdpReadThread implements Runnable {
+public class ClientTcpReadThread implements Runnable {
 
-	/** Instance of the UDP Socket. */
-	private DatagramSocket udpSocket;
+	/** Instance of the client object. */
+	private final Client client;
 	
-	/** Instance of the Socket. */
-	private final NESocket socket;
+	/** Instance of the connection to the server. */
+	private final Connection serverConnection;
 	
-	/** Creates a new thread to wait for UDP packets on the connection.
-	 * @param socket Instance of the socket.
-	 * @param udpSocket Instance of the UDP socket. 
+	/** Creates a new thread to wait for incoming TCP packets.
+	 * @param client Instance of the client.
+	 * @param serverConnection Instance of the server connection.
 	 */
-	public UdpReadThread(NESocket socket, DatagramSocket udpSocket) {
-		this.udpSocket = udpSocket;
-		this.socket = socket;
+	public ClientTcpReadThread(Client client, Connection serverConnection) {
+		this.client = client;
+		this.serverConnection = serverConnection;
 	}
 	
 	@Override
-	public void run() { 
-		while (udpSocket != null) {
-			try {
-				byte[] incomingData = new byte[socket.getConfig().PACKET_BUFFER_SIZE];
-				DatagramPacket readPacket = new DatagramPacket(incomingData, incomingData.length);
-				udpSocket.receive(readPacket);
-				Connection con = ConnectionManager.getInstance().getConnection(readPacket.getAddress());
-				if (con == null) {
-					System.out.println("Connection tried sending a packet without being connected to TCP.");
-					return;
-				}
+	public void run() {
+		try {
+			ObjectInputStream in = new ObjectInputStream(serverConnection.getSocket().getInputStream());
+			while (!serverConnection.getSocket().isClosed() && in != null) {
 				
 				/** Get all data from the packet that was sent. */
-				byte[] data = readPacket.getData();
-
-				/** Decrypt the data if the encryptor is set. */
-				if (socket.getEncryptionMethod() != null)
-					data = socket.getEncryptionMethod().decrypt(data);
+				byte[] data = new byte[client.getConfig().PACKET_BUFFER_SIZE];
+				in.readFully(data);
 				
+				/** Decrypt the data if the encryptor is set. */
+				if (client.getEncryptionMethod() != null)
+					data = client.getEncryptionMethod().decrypt(data);
+
 				/** Get the checksum found before the packet was sent. */
 				String checksumSent = getChecksumFromPacket(data);
 				
@@ -66,30 +58,23 @@ public class UdpReadThread implements Runnable {
 				byte[] objectArray = getObjectFromPacket(data);
 				
 				/** Get the checksum value of the object array. */
-				String checksumVal = String.valueOf(getChecksumOfObject(objectArray));
+				String checksumVal = getChecksumOfObject(objectArray);
 				
 				/** Get the object from the bytes. */
-				ByteArrayInputStream in = new ByteArrayInputStream(objectArray);
-				ObjectInputStream is = new ObjectInputStream(in);
+				ByteArrayInputStream objIn = new ByteArrayInputStream(objectArray);
+				ObjectInputStream is = new ObjectInputStream(objIn);
 				Object object = is.readObject();
 				
 				/** Check if the checksums are equal. If they aren't it means the packet was edited or didn't send completely. */
 				if (checksumSent.equals(checksumVal)) {
-					if (object instanceof String && ((String) object).equalsIgnoreCase("SettingUdpPort")) {
-						con.setUdpPort(readPacket.getPort());
-					} else {
-						socket.executeThread(new ReceivedThread(socket.getListener(), con, object));
+					if (object != null) {					
+						client.executeThread(new ReceivedThread(client.getListener(), serverConnection, object));
 					}
-				} else {
-					con.addPacketLoss();
 				}
-				is.close();
-				in.close();
-			} catch (IOException | ClassNotFoundException e) {
-				udpSocket = null;
-				e.printStackTrace();
-				socket.close();
 			}
+		} catch (Exception e) {
+			serverConnection.close();
+			client.executeThread(new DisconnectedThread(client.getListener(), serverConnection));
 		}
 	}
 
@@ -110,8 +95,9 @@ public class UdpReadThread implements Runnable {
 			objectArray[i] = data[i + 10];
 		return objectArray;
 	}
-	
+
 	/** Gets the first 10 bytes of the data, which is the checksum, and converts it to a string.
+	 * 
 	 * @param data The packet sent from the server.
 	 * @return The checksum in a string.
 	 */
@@ -133,7 +119,7 @@ public class UdpReadThread implements Runnable {
 		for (int i = 0; i < data.length; i++) {
 			byte val = data[i];
 			if (val == 0) {
-				if (count >= 30) {
+				if (count >= 20) {
 					break;
 				} else if (count == 0) {
 					index = i;
@@ -150,10 +136,14 @@ public class UdpReadThread implements Runnable {
 	 * @param data The object's byte array.
 	 * @return The checksum.
 	 */
-	private long getChecksumOfObject(byte[] data) {
+	private String getChecksumOfObject(byte[] data) {
 		Checksum checksum = new CRC32();
 		checksum.update(data, 0, data.length);
-		return checksum.getValue();
-	}	
+		String val = String.valueOf(checksum.getValue());
+		while (val.length() < 10) {
+			val += "0";
+		}
+		return val;
+	}
 	
 }

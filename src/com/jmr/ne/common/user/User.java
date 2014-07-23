@@ -12,7 +12,9 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * User.java
- * Purpose: An object that holds all user information. The username, password, joined rooms, joined zone, and session information. Created automatically when a new connection to the server is made. 
+ * Purpose: An object that holds all user information. The username, password, 
+ * joined rooms, joined zone, and session information. Created automatically 
+ * when a new connection to the server is made. 
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014
@@ -22,10 +24,10 @@ public class User implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
-	/** Holds all user connection information */
+	/** Holds all user connection information. */
 	private transient Session session;
 	
-	/** User variables */
+	/** User variables. */
 	private NEObject vars = new NEObject();
 	
 	/** The username of the User. Set to "Default" by default. */
@@ -46,7 +48,7 @@ public class User implements Serializable{
 	/** The Zone the User is currently in. */
 	private transient Zone currentZone;
 	
-	/** Default Constructor */
+	/** Default Constructor. */
 	public User() {
 		session = new Session();
 	}

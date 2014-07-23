@@ -3,6 +3,15 @@ package com.jmr.wrapper.server.threads;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.common.IListener;
 
+/**
+ * Networking Library
+ * ReceivedThread.java
+ * Purpose: Called when a connection sends a packet. Calls the 'received' method of the listener.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class ReceivedThread implements Runnable {
 	
 	/** Instance of the listener object. */

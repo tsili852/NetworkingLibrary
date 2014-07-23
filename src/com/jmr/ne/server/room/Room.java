@@ -19,6 +19,17 @@ import com.jmr.ne.server.module.ModuleLoader;
 import com.jmr.ne.server.module.NEServerModule;
 import com.jmr.ne.server.zone.Zone;
 
+/**
+ * Networking Library
+ * Room.java
+ * Purpose: The core functionality of the library. It manages all users, holds event
+ * listeners and waits for incoming packets, allows a connection to a database, allows the use
+ * of external modules, and manages most of the application.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class Room implements IUserController, Serializable{
 
 	private static final long serialVersionUID = 1L;

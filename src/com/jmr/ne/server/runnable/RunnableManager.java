@@ -2,6 +2,16 @@ package com.jmr.ne.server.runnable;
 
 import java.util.ArrayList;
 
+/**
+ * Networking Library
+ * RunnableManager.java
+ * Purpose: Manages all AbstractServerRunnable's that are currently running on the server. Takes
+ * care of disposing of the threads.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class RunnableManager {
 	
 	/** Instance of the RunnableManager. Is a Singleton. */

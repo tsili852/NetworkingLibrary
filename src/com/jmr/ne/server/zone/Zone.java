@@ -25,6 +25,17 @@ import com.jmr.ne.server.module.ModuleLoader;
 import com.jmr.ne.server.module.NEServerModule;
 import com.jmr.ne.server.room.Room;
 
+/**
+ * Networking Library
+ * Zone.java
+ * Purpose: Manages all users in the zone, holds all rooms, allows a connection 
+ * to a database, allows use of external modules, and sends all incoming events 
+ * to the room handlers.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class Zone implements IUserController {
 	
 	/** Name of the zone. */

@@ -7,7 +7,7 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * JoinRoomRequest.java
- * Purpose: Sends a new request to the server to join a room.
+ * Purpose: Sends a new request to the server to join a room with the given room name.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

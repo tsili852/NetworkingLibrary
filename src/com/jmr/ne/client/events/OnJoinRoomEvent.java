@@ -19,7 +19,7 @@ import com.jmr.ne.server.room.Room;
 
 public class OnJoinRoomEvent implements IEventListener {
 
-	/** Instanace of the client manager. */
+	/** Instance of the client manager. */
 	private final NEClientManager clientManager;
 	
 	/** Waits for the ON_ROOM_JOIN packet to be sent to the client

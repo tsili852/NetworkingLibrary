@@ -6,6 +6,16 @@ import com.jmr.ne.common.request.RoomRequest;
 import com.jmr.ne.common.user.User;
 import com.jmr.wrapper.common.Connection;
 
+/**
+ * Networking Library
+ * VariableChangeRequest.java
+ * Purpose: Requests for the client to update a user variable. The key is given along with the
+ * new value and the user to update.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class VariableChangeRequest extends RoomRequest {
 
 	/** The room that the user being changed is in. */

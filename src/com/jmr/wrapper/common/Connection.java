@@ -7,6 +7,20 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.zip.CRC32;
+import java.util.zip.Checksum;
+
+import com.jmr.wrapper.server.ConnectionManager;
+
+/**
+ * Networking Library
+ * Connection.java
+ * Purpose: Holds the TCP and UDP information on both the client and server side. It takes care
+ * of sending packets and encrypting them. 
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class Connection {
 
@@ -30,6 +44,12 @@ public class Connection {
 	
 	/** Instance of the TCP Object Output Stream. */
 	private ObjectOutputStream tcpOut;
+	
+	/** The amount of UDP packets received that were corrupted. */
+	private int packetsLossed = 0;
+	
+	/** Instance of the NESocket (either Client or Server). */
+	private NESocket neSocket;
 	
 	/** Creates a new connection.
 	 * @param port Instance of the UDP port.
@@ -75,34 +95,83 @@ public class Connection {
 	
 	/** Sends an object over the UDP socket.
 	 * @param object The object to send.
+	 * @throws NESocketClosed Thrown when the socket is closed.
 	 */
 	public void sendUdp(Object object) {
 		try {
-			ByteArrayOutputStream udpOutStream = new ByteArrayOutputStream();
-			ObjectOutputStream udpOut = new ObjectOutputStream(udpOutStream);
-			udpOut.writeObject(object);
-			byte[] data = udpOutStream.toByteArray();
+			ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+			ObjectOutputStream objOut = new ObjectOutputStream(byteOutStream);
+			objOut.writeObject(object);
+			byte[] data = getByteArray(byteOutStream, object);
 			DatagramPacket sendPacket = new DatagramPacket(data, data.length, address, port);
 			udpSocket.send(sendPacket);
-			udpOut.flush();
-			udpOutStream.flush();
-			udpOut.close();
-			udpOutStream.close();
+			objOut.flush();
+			byteOutStream.flush();
+			objOut.close();
+			byteOutStream.close();
 		} catch (IOException e) {
+			ConnectionManager.getInstance().close(this);
 			e.printStackTrace();
 		}
 	}
 	
+	/** Gets the byte array of the object, the checksum of the object, and combines them into
+	 * an array of bytes. The first 10 bytes are the checksum and the remaining bytes are the
+	 * object.
+	 * @param stream The object's byte stream to get the byte array. 
+	 * @param object The object being sent.
+	 * @return
+	 */
+	private byte[] getByteArray(ByteArrayOutputStream stream, Object object) {
+		byte[] array = stream.toByteArray();
+		Checksum checksum = new CRC32();
+		checksum.update(array, 0, array.length);
+		String val = String.valueOf(checksum.getValue());
+		
+		while (val.length() < 10) {
+			val += "0";
+		}
+		
+		byte[] checksumBytes = val.getBytes();
+		byte[] concat = new byte[neSocket.getConfig().PACKET_BUFFER_SIZE];
+		
+		System.arraycopy(checksumBytes, 0, concat, 0, checksumBytes.length);
+		System.arraycopy(array, 0, concat, checksumBytes.length, array.length);
+		
+		if (neSocket.getEncryptionMethod() != null) {
+			concat = neSocket.getEncryptionMethod().encrypt(concat);
+		}
+		
+		return concat;
+	}
+	
 	/** Sends an object over the TCP socket.
 	 * @param object The object to send.
+	 * @throws NESocketClosed Socket closed when trying to send data.
 	 */
 	public void sendTcp(Object object) {
 		try {
-			tcpOut.writeObject(object);
+			ByteArrayOutputStream byteOutStream = new ByteArrayOutputStream();
+			ObjectOutputStream objOut = new ObjectOutputStream(byteOutStream);
+			objOut.writeObject(object);
+			byte[] data = getByteArray(byteOutStream, object);
+			tcpOut.write(data);
 			tcpOut.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
+			ConnectionManager.getInstance().close(this);
 		}
+	}
+	
+	/** Adds one to the amount of UDP packets lost. */
+	public void addPacketLoss() {
+		packetsLossed++;
+		System.out.println("Lost packet. Amount lost: " + packetsLossed);
+	}
+	
+	/** @return The amount of packets lost. */
+	public int getPacketsLossed() {
+		return packetsLossed;
 	}
 	
 	/** @return The TCP Object Output Stream. */
@@ -110,12 +179,19 @@ public class Connection {
 		return tcpOut;
 	}
 	
+	/** Sets the instance of the NESocket (either Client or Server). */
+	public void setNESocketInstance(NESocket neSocket) {
+		this.neSocket = neSocket;
+	}
+	
 	/** Closes the connection. */
 	public void close() {
 		try {
-			socket.close();
+			if (socket != null)
+				socket.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			//socket already closed
 		}
+		socket = null;
 	}
 }

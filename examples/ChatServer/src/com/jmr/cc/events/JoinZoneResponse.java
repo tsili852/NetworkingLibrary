@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.jmr.ne.common.event.NEEvent;
+import com.jmr.ne.common.exceptions.NEDatabaseQueryError;
 import com.jmr.ne.common.exceptions.NEException;
 import com.jmr.ne.common.exceptions.NEUserDoesNotExistException;
 import com.jmr.ne.common.packet.NEPacket;
@@ -37,11 +38,20 @@ public class JoinZoneResponse extends RoomResponse {
 		if (zone.equalsIgnoreCase("ChatZone")) {
 			Zone z = ZoneManager.getInstance().getZoneByName(zone);
 			Database db = z.getDatabase();
-			ResultSet rs = db.executeQuery("SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'");
+			ResultSet rs = null;
+			try {
+				rs = db.executeQuery("SELECT * FROM users WHERE username='" + username + "' AND password='" + password + "'");
+			} catch (NEDatabaseQueryError e) {
+				e.printStackTrace();
+			}
 
 			boolean passed = false;
-			if (db.getRowCount(rs) > 0) { //means there is a row with the username and pass given
-				passed = true;
+			try {
+				if (db.getRowCount(rs) > 0) { //means there is a row with the username and pass given
+					passed = true;
+				}
+			} catch (NEDatabaseQueryError e) {
+				e.printStackTrace();
 			}
 			if (!passed) {
 				NEPacket errorPacket = createErrorPacket("The username or password you provided is incorrect.", NEEvent.ON_ZONE_JOIN_ERROR);
@@ -68,7 +78,7 @@ public class JoinZoneResponse extends RoomResponse {
 				return;
 			}
 		}
-		
+
 		Packet response = new Packet(NEEvent.ON_ZONE_JOIN.toString());
 		user.setUsername(username);
 		user.setPassword(password);

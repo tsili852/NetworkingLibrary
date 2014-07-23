@@ -9,7 +9,7 @@ import com.jmr.ne.common.user.User;
 /**
  * Networking Library
  * OnUserVariableUpdateEvent.java
- * Purpose: Waits for a user variable change request and changes the user variables.
+ * Purpose: Waits for a user variable change request and changes the user's variable if the user exists.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

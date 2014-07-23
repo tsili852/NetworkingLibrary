@@ -8,7 +8,8 @@ import com.jmr.wrapper.client.Client;
 /**
  * Networking Library
  * NEClientManager.java
- * Purpose: Starts a new client and connects to the server.
+ * Purpose: Starts a new client and connects to the server. Contains a ClientListener to wait for
+ * incoming packets, connections, and disconnections.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

@@ -5,7 +5,7 @@ import java.io.Serializable;
 /**
  * Networking Library
  * Packet.java
- * Purpose: Gets sent to the server/client to call the event.
+ * Purpose: Gets sent to the server/client to call the event by the given name.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

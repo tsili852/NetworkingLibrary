@@ -1,5 +1,14 @@
 package com.jmr.wrapper.common;
 
+/**
+ * Networking Library
+ * IListener.java
+ * Purpose: Interface that lays out the framework for listeners attached to either the Server
+ * or Client.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public interface IListener {
 

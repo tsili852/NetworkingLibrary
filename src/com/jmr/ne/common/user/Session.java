@@ -8,7 +8,7 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * Session.java
- * Purpose: Holds the connection and id of the User's session. Lets you send TCP and UDP packets.
+ * Purpose: Holds the connection and ID of the User's session. Lets you send TCP and UDP packets.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

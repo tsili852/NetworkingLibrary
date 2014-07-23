@@ -10,8 +10,23 @@ import java.util.concurrent.Executors;
 
 import com.jmr.wrapper.common.IListener;
 import com.jmr.wrapper.common.NESocket;
-import com.jmr.wrapper.server.threads.TcpReadThread;
+import com.jmr.wrapper.common.config.Config;
+import com.jmr.wrapper.common.exceptions.NECantStartServer;
+import com.jmr.wrapper.encryption.Encryptor;
+import com.jmr.wrapper.server.threads.TcpAcceptThread;
 import com.jmr.wrapper.server.threads.UdpReadThread;
+
+/**
+ * Networking Library
+ * Server.java
+ * Purpose: Starts the a server and manages the TCP and UDP sockets. Provides
+ * methods to send packets over UDP and TCP and it also allows a listener to be set to wait 
+ * for new connections, disconnections, and packets. It also provides a method to set the 
+ * type of encryption being used if any.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class Server implements NESocket {
 
@@ -30,26 +45,34 @@ public class Server implements NESocket {
 	/** The listener object. */
 	private IListener listener;
 	
+	/** The server configurations. */
+	private ServerConfig serverConfig;
+	
+	/** The type of encryption to use when sending objects or TCP or UDP. */
+	private Encryptor encryptionMethod;
+	
 	/** Starts a new server on the TCP and UDP port.
 	 * @param tcpPort The TCP port.
 	 * @param udpPort The UDP port.
+	 * @throws NECantStartServer 
 	 */
-	public Server(int tcpPort, int udpPort) {
+	public Server(int tcpPort, int udpPort) throws NECantStartServer {
+		serverConfig = new ServerConfig();
 		try {
 			tcpSocket = new ServerSocket(tcpPort);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new NECantStartServer();
 		}
 		try {
-			udpSocket = new DatagramSocket(new InetSocketAddress("localhost", udpPort) );
+			udpSocket = new DatagramSocket(new InetSocketAddress("localhost", udpPort));
 		} catch (SocketException e) {
-			e.printStackTrace();
+			throw new NECantStartServer();
 		}
 		this.udpPort = udpPort;
 		mainExecutor = Executors.newCachedThreadPool();
 		if (tcpSocket != null && udpSocket != null) {
 			mainExecutor.execute(new UdpReadThread(this, udpSocket));
-			mainExecutor.execute(new TcpReadThread(this, tcpSocket));
+			mainExecutor.execute(new TcpAcceptThread(this, tcpSocket));
 		}
 	}
 	
@@ -63,6 +86,16 @@ public class Server implements NESocket {
 	@Override
 	public IListener getListener() {
 		return listener;
+	}
+	
+	@Override
+	public Encryptor getEncryptionMethod() {
+		return encryptionMethod;
+	}
+
+	@Override
+	public void setEncryptionMethod(Encryptor encryptor) {
+		this.encryptionMethod = encryptor;
 	}
 	
 	@Override
@@ -88,12 +121,18 @@ public class Server implements NESocket {
 	@Override
 	public void close() {
 		try {
-			tcpSocket.close();
+			if (!tcpSocket.isClosed())
+				tcpSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		ConnectionManager.getInstance().close();
+		ConnectionManager.getInstance().closeAll();
 		udpSocket.close();
+	}
+	
+	@Override
+	public Config getConfig() {
+		return serverConfig;
 	}
 	
 }

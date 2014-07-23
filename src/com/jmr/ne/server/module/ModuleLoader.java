@@ -5,6 +5,14 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 
+/**
+ * Networking Library
+ * ModuleLoader.java
+ * Purpose: Loads a module from the given path and the class.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class ModuleLoader {
 

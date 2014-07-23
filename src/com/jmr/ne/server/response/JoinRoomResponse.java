@@ -8,6 +8,19 @@ import com.jmr.ne.common.user.User;
 import com.jmr.ne.server.room.Room;
 import com.jmr.ne.server.zone.Zone;
 
+/**
+ * Networking Library
+ * JoinRoomResponse.java
+ * Purpose: Waits for a user join room request and checks cases to see if they are available
+ * to. If it does accept the request it will return a packet named NEEvent.ON_ROOM_JOIN to the 
+ * user that requested it, and it will return a packet named NEEvent.USER_JOIN_ROOM to all
+ * users in the same room. Otherwise it will return a packet named NEEvent.ON_ROOM_JOIN_ERROR
+ * with the error stored in the key: NEEvent.ERROR_MESSAGE.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class JoinRoomResponse extends RoomResponse {
 
 	/** @return the name of the packet which is "joinRoomRequest". */

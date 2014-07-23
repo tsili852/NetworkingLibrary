@@ -1,5 +1,16 @@
 package com.jmr.ne.server.runnable;
 
+
+/**
+ * Networking Library
+ * AbstractServerRunnable.java
+ * Purpose: An abstract thread that is continuously ran. Uses a method to get the delta and 
+ * update at a continuous speed so the time between each update is the same.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public abstract class AbstractServerRunnable implements Runnable {
 
 	/** FPS of the thread. */

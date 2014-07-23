@@ -2,6 +2,16 @@ package com.jmr.ne.server.room;
 
 import java.io.Serializable;
 
+/**
+ * Networking Library
+ * RoomSettings.java
+ * Purpose: Holds the room configurations that can be set to a room to allow for specific 
+ * settings.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class RoomSettings implements Serializable{
 
 	private static final long serialVersionUID = 1L;

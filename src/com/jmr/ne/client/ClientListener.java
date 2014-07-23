@@ -6,9 +6,20 @@ import com.jmr.ne.client.events.UserJoinEvent;
 import com.jmr.ne.client.events.UserLeaveEvent;
 import com.jmr.ne.common.event.EventHandler;
 import com.jmr.ne.common.event.NEEvent;
+import com.jmr.ne.common.packet.NEPacket;
 import com.jmr.ne.common.packet.Packet;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.common.IListener;
+
+/**
+ * Networking Library
+ * ClientListener.java
+ * Purpose: Waits for incoming packets, new connections, and disconnected connections. Passes
+ * received objects to the event handler.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class ClientListener implements IListener {
 
@@ -30,11 +41,7 @@ public class ClientListener implements IListener {
 		eventHandler.addListener(new UserJoinEvent());
 		eventHandler.addListener(new UserLeaveEvent());
 	}
-	
-	/** Implemented received method. Waits for incoming packets.
-	 * @param con A reference to the connection the packet came from.
-	 * @param object The object that was sent.
-	 */
+
 	@Override
 	public void received(Connection con, Object object) {
 		if (object instanceof Packet) {
@@ -50,7 +57,12 @@ public class ClientListener implements IListener {
 	
 	@Override
 	public void disconnected(Connection con) {
-		Packet packet = new Packet(NEEvent.USER_LEAVE_ROOM.toString());
+		NEPacket packet = new NEPacket(NEEvent.USER_LEAVE_ROOM.toString());
+		packet.vars.put("user", clientManager.getMyUser());
+		String name = "";
+		if (clientManager.getMyUser().getLastRoomJoined() != null)
+			name = clientManager.getMyUser().getLastRoomJoined().getName();
+		packet.vars.put("room", name);
 		eventHandler.callEvent(clientManager.getMyUser(), packet);
 	}
 	

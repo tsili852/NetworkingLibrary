@@ -3,6 +3,16 @@ package com.jmr.wrapper.server.threads;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.common.IListener;
 
+/**
+ * Networking Library
+ * NewConnectionThread.java
+ * Purpose: Called when a new connection connects to the server. Calls the 'connected' method
+ * of the listener.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class NewConnectionThread implements Runnable {
 	
 	/** Instance of the listener object. */

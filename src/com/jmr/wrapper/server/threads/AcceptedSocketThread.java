@@ -5,6 +5,19 @@ import java.net.Socket;
 import com.jmr.wrapper.common.Connection;
 import com.jmr.wrapper.server.ConnectionManager;
 import com.jmr.wrapper.server.Server;
+import com.jmr.wrapper.server.ServerConfig;
+
+/**
+ * Networking Library
+ * AcceptedSocketThread.java
+ * Purpose: Called when a new Socket connects to the server. Adds the connection to the 
+ * ConnectionManager, calls the 'connected' method of the listener, starts a ping thread to 
+ * make sure the connection stays alive, and starts a thread to listen to incoming packets
+ * over TCP.
+ * 
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public class AcceptedSocketThread implements Runnable {
 
@@ -26,8 +39,11 @@ public class AcceptedSocketThread implements Runnable {
 	@Override
 	public void run() {
 		Connection con = new Connection(server.getUdpPort(), socket, server.getUdpSocket());
+		con.setNESocketInstance(server);
 		ConnectionManager.getInstance().addConnection(con);
 		server.executeThread(new NewConnectionThread(server.getListener(), con));
-		server.executeThread(new ConnectionTcpReadThread(server, con));
+		if (((ServerConfig)server.getConfig()).PING_CLIENTS)
+			server.executeThread(new PingThread(server, con));
+		server.executeThread(new ServerTcpReadThread(server, con));
 	}
 }

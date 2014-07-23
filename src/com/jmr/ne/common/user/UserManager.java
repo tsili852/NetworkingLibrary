@@ -10,7 +10,8 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * UserManager.java
- * Purpose: Holds all users of a system. Includes get methods to find users and allows you to add new users. 
+ * Purpose: Holds all users of a system. Includes get methods to find users and allows 
+ * you to add new users. 
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

@@ -3,6 +3,15 @@ package com.jmr.ne.server.module;
 import com.jmr.ne.common.event.EventHandler;
 import com.jmr.ne.common.event.IEventListener;
 
+/**
+ * Networking Library
+ * NEServerModule.java
+ * Purpose: The abstract class that all modules extend. Provides the methods needed to add event
+ * listeners and custom code.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
 
 public abstract class NEServerModule {
 	

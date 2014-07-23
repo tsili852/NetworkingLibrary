@@ -5,6 +5,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.jmr.ne.common.exceptions.NEZoneExistsException;
 
+/**
+ * Networking Library
+ * ZoneManager.java
+ * Purpose: Manages all zones of the application. Has methods to get a zone by the name or ID.
+ *
+ * @author Jon R (Baseball435)
+ * @version 1.0 7/19/2014
+ */
+
 public class ZoneManager {
 
 	/** Single Instance of the ZoneManager. */

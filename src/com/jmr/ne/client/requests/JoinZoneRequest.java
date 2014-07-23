@@ -7,7 +7,7 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * JoinZoneRequest.java
- * Purpose: Sends a new request to the server to join a zone.
+ * Purpose: Sends a new request to the server to join a zone with the given zone name, username, and password.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014

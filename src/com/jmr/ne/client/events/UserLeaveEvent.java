@@ -9,7 +9,7 @@ import com.jmr.ne.common.user.User;
 /**
  * Networking Library
  * UserLeaveEvent.java
- * Purpose: Waits for a User Leave event and removes the client from the room.
+ * Purpose: Waits for a User Leave event and removes the user from the room.
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014
@@ -32,7 +32,8 @@ public class UserLeaveEvent implements IEventListener {
 		NEPacket ne = (NEPacket) packet;
 		User u = (User) ne.vars.getObject("user");
 		String name = ne.vars.getString("room");
-		user.getJoinedRoomByName(name).removeUser(u);
+		if (user.getJoinedRoomByName(name) != null)
+			user.getJoinedRoomByName(name).removeUser(u);
 	}
 
 }

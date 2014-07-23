@@ -8,7 +8,9 @@ import com.jmr.wrapper.common.Connection;
 /**
  * Networking Library
  * BaseRequest.java
- * Purpose: Sent to the server to request something.
+ * Purpose: Sent to the server to make a request to do something. What you want to do is
+ * defined in the execute method. The validate method makes sure all cases are 
+ * filled beforehand. 
  *
  * @author Jon R (Baseball435)
  * @version 1.0 7/19/2014
@@ -40,8 +42,12 @@ public abstract class BaseRequest {
 	 * @throws NEException Exception thrown while validating.
 	 */
 	public void send(Connection con) throws NEException {
-		validate();
-		execute(con);
+		try {
+			validate();
+			execute(con);
+		} catch (Exception e) {
+			throw e;
+		}
 	}
 
 }

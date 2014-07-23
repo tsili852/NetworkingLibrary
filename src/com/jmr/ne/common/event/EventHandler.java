@@ -61,7 +61,10 @@ public class EventHandler {
 			el.handlePacket(user, packet);
 	}
 	
-	/** A filter that checks if the NEObject contains a key called "user". If it does it gets the localized user object and sets the key to it.
+	/** A filter that checks if the NEObject contains a key called "user". If it does it gets 
+	 * the localized user object and sets the key to it. The reason this is done is because 
+	 * the references of objects from the server side don't match the client side.
+	 * 
 	 * @param user The user that sent the packet.
 	 * @param packet The packet sent.
 	 */
@@ -104,9 +107,7 @@ public class EventHandler {
 		return ret;
 	}
 	
-	/**
-	 * Removes all listeners
-	 */
+	/** Removes all listeners  */
 	public void clearAllListeners() {
 		listeners.clear();
 	}
